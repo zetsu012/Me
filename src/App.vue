@@ -7,7 +7,7 @@ import NavigationDots from './components/NavigationDots.vue'
 
 <template>
   <div class="min-h-screen w-full relative overflow-hidden bg-cover bg-center" 
-       style="background-image: url('@/assets/bckground_image.svg')">
+       style="background-image: url('./assets/bckground_image.svg')">
     <!-- Gradient Overlay -->
     <div class="absolute right-0 top-0 w-[52%] h-full bg-gradient-to-l from-black/50 to-black/0 pointer-events-none"></div>
     
