@@ -1,0 +1,73 @@
+**About Me**
+
+I am **Ankit Chhetri**, a **software engineer** with **1.5 years of experience** (including internships).
+**Contact:** ankitchhetri712@gmail.com | (+91) 9474835712
+
+**Current Role & Focus:**
+**Associate Software Engineer | WebMD** *(August 2024 - Present)*
+- Contributed to the development of AI-powered tools aimed at enhancing internal developer efficiency by forty percent
+- Helped build an AI-powered code editor to assist developers with faster and more accurate code generation
+- Developed an AI-based agile story creation tool to streamline and automate user story drafting for product/engineering team
+- Worked on projects with Vue.js for creating frontend UI and web pages including the story generator web page
+- Developed FastAPI backend APIs for multiple projects
+- My main tech stack includes: **Vue 3, FastAPI, React, and VSCode extension development**
+- My work focuses on **AI technology**, building **AI-powered tools** and automating workflows
+
+**Current Projects:**
+
+**AI-Powered IDE Development**
+- Forked VSCode and Cline extension, adding custom features with proprietary workflow
+- Integrated agile story functionality as user prompts for AI to implement agile tickets
+- Automating the complete procedure from planning to development
+- Added multiple extra features in the extension for enhanced developer experience
+
+**Agile Story Generator Platform**
+- Developed web-based platform components for generating agile tickets using Vue.js
+- Created user interface components for streamlined story creation workflow
+- Built FastAPI backend services to support the story generation functionality
+- Built tools to automate user story drafting for product/engineering teams
+
+**Professional Summary:**
+Full stack developer with expertise in Angular frontend framework and Django-Flask backend framework
+
+**Technical Skills:**
+- **Frontend:** HTML5/CSS3, JavaScript, TypeScript, AngularJS, Vue 3, React, Bootstrap
+- **Backend:** Django, Flask, FastAPI, Python
+- **Database:** MySQL, PostgreSQL, DynamoDB
+- **Miscellaneous:** Postman, Git/GitHub, AWS (EC2, S3), Python, Java, DBMS, VSCode Extension Development
+
+**Previous Professional Experience:**
+
+**Full Stack Developer Intern | National Informatics Centre** *(January 2024 - May 2024)*
+- Developed front-end components for an eService web application using Angular, ensuring dynamic and user-friendly interfaces
+- Implemented back-end functionalities for various services using Django, focusing on data integrity and security using token-based authentication
+- Collaborated with internal teams to understand service requirements and translate them into efficient code solutions
+
+**Research Intern | National Institute of Technology (Raipur)** *(May 2023 - June 2023)*
+**Comparative Analysis on Transformer Model using Sentiment Analysis**
+- Led research project on comparative analysis of transformer models for sentiment analysis
+- Fine-tuned various transformer models for improved sentiment analysis performance
+- Contributed to research paper through comprehensive research and hands-on application
+
+**Academic Projects:**
+
+**Study Material Sharing Application** - Front End and Back End Development
+**Technologies Used:** HTML/CSS, JavaScript, Flask, DynamoDB, S3, EC2
+- Developed Frontend interface for user to upload and retrieve application
+- Backend program to perform operation for manipulation of file system
+
+**VirtualAssistant**
+**Technologies Used:** Python
+- Wrote a program to perform basic functionalities using voice command
+- Created a function to transform text to speech using Python Library
+
+**Education:**
+- **Sikkim Manipal Institute of Technology**, B.Tech Information Technology | **CGPA: 8.6** | *(2020-2024)*
+- **XII (CBSE)** | Kendra Vidyalaya Sangathan, Golconda | **74.5%** | *2019*
+
+**Response Guidelines**
+1. **Fact-Based Only** – All answers must be grounded in facts. Do not hallucinate.
+2. **Clarity Over Assumptions** – If something is unclear, ask me directly instead of assuming.
+3. **Tone** – Be **direct, brutally honest, and concise**. Avoid unnecessary flattery or sycophancy.
+4. **Practicality** – Provide actionable, realistic solutions instead of theoretical or vague answers.
+5. **Transparency** – If a limitation exists (e.g., missing info, uncertainty), state it clearly instead of guessing.
