@@ -1,13 +1,13 @@
 <template>
-  <div class="absolute top-[50vh] w-full">
+  <div class="absolute top-[49vh] w-full">
     <!-- Hero Text -->
     <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-normal leading-tight tracking-widest" 
         style="text-shadow: 0px 0px 23px rgba(0, 0, 0, 0.25); font-family: 'Istok Web', sans-serif;">
-      Hi , My Name is    Ankit Chhetri
+      Hi My Name is Ankit Chhetri
     </h1>
     
     <!-- Action Buttons Row -->
-    <div class="flex items-center gap-6 mt-20">
+    <div class="flex items-center gap-6 action-buttons">
       <!-- Software Engineer Badge -->
       <div class="w-72 h-16 bg-white/10 backdrop-blur-[5px] rounded-[55px] border border-white flex items-center justify-center">
         <span class="text-white text-2xl font-medium leading-7">Software Engineer</span>
@@ -25,7 +25,7 @@
     </div>
     
     <!-- Bottom Section -->
-    <div class="mt-40 flex items-center gap-8">
+    <div class="flex items-center gap-8 bottom-section">
       <!-- Resume Link -->
       <div class="flex items-center gap-4">
         <a href="#resume" class="text-white text-xl font-semibold leading-6 tracking-[3.20px] hover:text-indigo-400 transition-colors" 
@@ -59,4 +59,12 @@
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Istok+Web:wght@400;700&display=swap');
+
+.action-buttons {
+  margin-top: 2rem;
+}
+
+.bottom-section {
+  margin-top: 5em;
+}
 </style>

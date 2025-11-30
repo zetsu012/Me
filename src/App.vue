@@ -27,9 +27,11 @@ import NavigationDots from './components/NavigationDots.vue'
         </svg>
       </button>
       
-      <!-- Scroll Through Projects Button -->
-      <button class="w-96 h-14 bg-black/20 backdrop-blur-sm rounded-[38px] flex items-center justify-center hover:bg-black/30 transition-colors">
-        <span class="text-white text-xl font-bold">Scroll through my projects</span>
+      <button class="w-80 h-14 bg-black/20 backdrop-blur-sm rounded-[38px] flex items-center justify-center gap-3 hover:bg-black/30 transition-colors">
+        <span class="text-white text-xl font-medium">Scroll through my projects</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6 text-white">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+        </svg>
       </button>
     </div>
     
