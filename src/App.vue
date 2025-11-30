@@ -1,4 +1,5 @@
 <script setup>
+import bgImage from './assets/bckground_image.svg'
 import Navbar from './components/Navbar.vue'
 import HeroSection from './components/HeroSection.vue'
 import ProjectCarousel from './components/ProjectCarousel.vue'
@@ -6,8 +7,8 @@ import NavigationDots from './components/NavigationDots.vue'
 </script>
 
 <template>
-  <div class="min-h-screen w-full relative overflow-hidden bg-cover bg-center" 
-       style="background-image: url('./assets/bckground_image.svg')">
+    <div class="min-h-screen w-full relative overflow-hidden bg-cover bg-center"
+      :style="{ backgroundImage: `url(${bgImage})` }">
     <!-- Gradient Overlay -->
     <div class="absolute right-0 top-0 w-[52%] h-full bg-gradient-to-l from-black/50 to-black/0 pointer-events-none"></div>
     
