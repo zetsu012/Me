@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed left-[5%] top-1/2 -translate-y-1/2 flex flex-col items-center gap-6 z-40">
+  <div class="hidden lg:flex fixed left-[5%] top-1/2 -translate-y-1/2 flex-col items-center gap-6 z-40">
     <!-- Vertical Line -->
     <div class="w-0.5 h-16 bg-white"></div>
     

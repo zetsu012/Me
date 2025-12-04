@@ -1,52 +1,52 @@
 <template>
-  <div class="absolute top-[49vh] w-full">
+  <div class="relative lg:absolute lg:top-[58vh] w-full px-4 sm:px-6 lg:px-0 mt-12 sm:mt-16 lg:mt-0">
     <!-- Hero Text -->
-    <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-normal leading-tight tracking-widest" 
+    <h1 class="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-normal leading-tight tracking-wide sm:tracking-widest" 
         style="text-shadow: 0px 0px 23px rgba(0, 0, 0, 0.25); font-family: 'Istok Web', sans-serif;">
       Hi My Name is Ankit Chhetri
     </h1>
     
     <!-- Action Buttons Row -->
-    <div class="flex items-center gap-6 action-buttons">
+    <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 action-buttons">
       <!-- Software Engineer Badge -->
-      <div class="w-72 h-16 bg-white/10 backdrop-blur-[5px] rounded-[55px] border border-white flex items-center justify-center">
-        <span class="text-white text-2xl font-medium leading-7">Software Engineer</span>
+      <div class="w-full sm:w-auto sm:min-w-[18rem] lg:w-72 h-14 sm:h-16 bg-white/10 backdrop-blur-[5px] rounded-[55px] border border-white flex items-center justify-center px-4">
+        <span class="text-white text-xl sm:text-2xl font-medium leading-7">Software Engineer</span>
       </div>
       
       <!-- Play Button -->
       <button class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-        <div class="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-white ml-1">
+        <div class="w-14 h-14 sm:w-16 sm:h-16 bg-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 sm:w-7 sm:h-7 text-white ml-1">
             <path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />
           </svg>
         </div>
-        <span class="text-white/75 text-lg font-medium leading-5">Watch About me</span>
+        <span class="text-white/75 text-base sm:text-lg font-medium leading-5">Watch About me</span>
       </button>
     </div>
     
     <!-- Bottom Section -->
-    <div class="flex items-center gap-8 bottom-section">
+    <div class="flex flex-col sm:flex-row items-center sm:items-center gap-6 sm:gap-8 bottom-section">
       <!-- Resume Link -->
-      <div class="flex items-center gap-4">
-        <a href="#resume" class="text-white text-xl font-semibold leading-6 tracking-[3.20px] hover:text-indigo-400 transition-colors" 
+      <div class="flex items-center gap-3 sm:gap-4">
+        <a href="#resume" class="text-white text-lg sm:text-xl font-semibold leading-6 tracking-[2px] sm:tracking-[3.20px] hover:text-indigo-400 transition-colors" 
            style="text-shadow: 0px 4px 5px rgba(0, 0, 0, 0.5);">
           RESUME
         </a>
-        <div class="w-44 h-0.5 bg-white"></div>
+        <div class="w-32 sm:w-44 h-0.5 bg-white"></div>
       </div>
       
       <!-- Social Icons -->
-      <div class="flex items-center gap-6">
+      <div class="flex items-center gap-5 sm:gap-6">
         <!-- GitHub -->
-        <a href="#" class="w-7 h-7 hover:opacity-80 transition-opacity">
+        <a href="#" class="w-10 h-10 sm:w-7 sm:h-7 hover:opacity-80 transition-opacity touch-target">
           <img class="w-full h-full" src="https://placehold.co/29x29" alt="GitHub" />
         </a>
         <!-- LinkedIn -->
-        <a href="#" class="w-7 h-7 hover:opacity-80 transition-opacity">
+        <a href="#" class="w-10 h-10 sm:w-7 sm:h-7 hover:opacity-80 transition-opacity touch-target">
           <img class="w-full h-full" src="https://placehold.co/29x29" alt="LinkedIn" />
         </a>
         <!-- Twitter/X -->
-        <a href="#" class="w-7 h-7 hover:opacity-80 transition-opacity">
+        <a href="#" class="w-10 h-10 sm:w-7 sm:h-7 hover:opacity-80 transition-opacity touch-target">
           <img class="w-full h-full" src="https://placehold.co/29x29" alt="Twitter" />
         </a>
       </div>
@@ -61,10 +61,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Istok+Web:wght@400;700&display=swap');
 
 .action-buttons {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
 }
 
 .bottom-section {
-  margin-top: 5em;
+  margin-top: 3rem;
+}
+
+@media (min-width: 640px) {
+  .action-buttons {
+    margin-top: 2rem;
+  }
+  
+  .bottom-section {
+    margin-top: 4rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .bottom-section {
+    margin-top: 5rem;
+  }
+}
+
+/* Ensure touch targets are accessible on mobile */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
 }
 </style>
