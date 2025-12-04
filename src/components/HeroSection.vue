@@ -1,5 +1,5 @@
 <template>
-  <div class="relative lg:absolute lg:top-[58vh] w-full px-4 sm:px-6 lg:px-0 mt-12 sm:mt-16 lg:mt-0">
+  <div class="relative lg:absolute lg:top-[50vh] w-full px-4 sm:px-6 lg:px-0 mt-20 sm:mt-24 lg:mt-0">
     <!-- Hero Text -->
     <h1 class="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-normal leading-tight tracking-wide sm:tracking-widest" 
         style="text-shadow: 0px 0px 23px rgba(0, 0, 0, 0.25); font-family: 'Istok Web', sans-serif;">
@@ -24,33 +24,6 @@
       </button>
     </div>
     
-    <!-- Bottom Section -->
-    <div class="flex flex-col sm:flex-row items-center sm:items-center gap-6 sm:gap-8 bottom-section">
-      <!-- Resume Link -->
-      <div class="flex items-center gap-3 sm:gap-4">
-        <a href="#resume" class="text-white text-lg sm:text-xl font-semibold leading-6 tracking-[2px] sm:tracking-[3.20px] hover:text-indigo-400 transition-colors" 
-           style="text-shadow: 0px 4px 5px rgba(0, 0, 0, 0.5);">
-          RESUME
-        </a>
-        <div class="w-32 sm:w-44 h-0.5 bg-white"></div>
-      </div>
-      
-      <!-- Social Icons -->
-      <div class="flex items-center gap-5 sm:gap-6">
-        <!-- GitHub -->
-        <a href="#" class="w-10 h-10 sm:w-7 sm:h-7 hover:opacity-80 transition-opacity touch-target">
-          <img class="w-full h-full" src="https://placehold.co/29x29" alt="GitHub" />
-        </a>
-        <!-- LinkedIn -->
-        <a href="#" class="w-10 h-10 sm:w-7 sm:h-7 hover:opacity-80 transition-opacity touch-target">
-          <img class="w-full h-full" src="https://placehold.co/29x29" alt="LinkedIn" />
-        </a>
-        <!-- Twitter/X -->
-        <a href="#" class="w-10 h-10 sm:w-7 sm:h-7 hover:opacity-80 transition-opacity touch-target">
-          <img class="w-full h-full" src="https://placehold.co/29x29" alt="Twitter" />
-        </a>
-      </div>
-    </div>
   </div>
 </template>
 
