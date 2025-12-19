@@ -14,7 +14,7 @@
       </div>
       
       <!-- Play Button -->
-      <button class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+      <button @click="$emit('start-slideshow')" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
         <div class="w-14 h-14 sm:w-16 sm:h-16 bg-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 sm:w-7 sm:h-7 text-white ml-1">
             <path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />
@@ -28,6 +28,7 @@
 </template>
 
 <script setup>
+defineEmits(['start-slideshow'])
 </script>
 
 <style scoped>
