@@ -2,11 +2,12 @@ import { ref, onUnmounted } from 'vue'
 import { gsap } from 'gsap'
 
 export function useJourneySlideshow() {
-  const currentSlide = ref(-1) // -1 means not started
+  const currentSlide = ref(0) // Start at 0 for pre-rendering
   const isPlaying = ref(false)
   const isPaused = ref(false)
   let autoPlayTimer = null
   let timeline = null
+  let isInitialized = false
 
   // Journey slides - telling your story
   const slides = [
@@ -70,7 +71,7 @@ export function useJourneySlideshow() {
 
   const totalSlides = slides.length
 
-  const createSlideTransition = (toIndex) => {
+  const createSlideTransition = () => {
     if (timeline) timeline.kill()
 
     timeline = gsap.timeline({
@@ -81,32 +82,32 @@ export function useJourneySlideshow() {
     timeline.to('.journey-slide-container', {
       opacity: 1,
       pointerEvents: 'auto',
-      duration: 0.3
+      duration: 0.25
     }, 0)
 
     // Show dark overlay
     timeline.to('.journey-overlay', {
       opacity: 1,
-      duration: 0.3
+      duration: 0.25
     }, 0)
 
     // Hide homepage content
-    timeline.to(['.hero-section', '.project-carousel', '.navbar', '.nav-dots'], {
+    timeline.to(['.hero-section', '.project-carousel', '.nav-dots'], {
       opacity: 0,
-      duration: 0.3
+      duration: 0.25
     }, 0)
 
     // Animate slide content in
     timeline.fromTo('.journey-content > *', {
       opacity: 0,
-      y: 20
+      y: 15
     }, {
       opacity: 1,
       y: 0,
-      duration: 0.4,
-      stagger: 0.1,
+      duration: 0.3,
+      stagger: 0.08,
       ease: 'power2.out'
-    }, 0.3)
+    }, 0.15)
 
     return timeline
   }
@@ -115,7 +116,33 @@ export function useJourneySlideshow() {
     if (index < 0 || index >= totalSlides) return
 
     currentSlide.value = index
-    createSlideTransition(index)
+
+    // For slide transitions (not the first slide), we need to re-animate content
+    if (timeline) timeline.kill()
+
+    timeline = gsap.timeline({
+      defaults: { ease: 'power2.out' }
+    })
+
+    // Fade out old content
+    timeline.to('.journey-content > *', {
+      opacity: 0,
+      y: -10,
+      duration: 0.2,
+      stagger: 0.03
+    })
+
+    // Fade in new content
+    timeline.fromTo('.journey-content > *', {
+      opacity: 0,
+      y: 15
+    }, {
+      opacity: 1,
+      y: 0,
+      duration: 0.3,
+      stagger: 0.08,
+      ease: 'power2.out'
+    }, 0.25)
 
     // Clear existing timer
     if (autoPlayTimer) {
@@ -151,7 +178,23 @@ export function useJourneySlideshow() {
 
     isPlaying.value = true
     isPaused.value = false
-    goToSlide(0)
+
+    // Everything is pre-rendered, just start the animation immediately
+    if (!isInitialized) {
+      isInitialized = true
+      currentSlide.value = 0 // Ensure we're at slide 0
+      createSlideTransition()
+
+      // Auto-advance after duration
+      if (currentSlide.value < totalSlides - 1) {
+        autoPlayTimer = setTimeout(() => {
+          nextSlide()
+        }, slides[0].duration)
+      }
+    } else {
+      // Resume from current slide
+      goToSlide(currentSlide.value)
+    }
   }
 
   const pauseSlideshow = () => {
@@ -214,14 +257,15 @@ export function useJourneySlideshow() {
     }, 0.2)
 
     // Show homepage content
-    exitTimeline.to(['.hero-section', '.project-carousel', '.navbar', '.nav-dots'], {
+    exitTimeline.to(['.hero-section', '.project-carousel', '.nav-dots'], {
       opacity: 1,
       duration: 0.4
     }, 0.3)
 
     // Reset to initial state after animation completes
     exitTimeline.call(() => {
-      currentSlide.value = -1
+      currentSlide.value = 0
+      isInitialized = false
     })
   }
 
