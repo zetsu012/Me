@@ -1,6 +1,5 @@
 <script setup>
 import bgImage from './assets/bckground_image.svg'
-import Navbar from './components/Navbar.vue'
 import HeroSection from './components/HeroSection.vue'
 import ProjectCarousel from './components/ProjectCarousel.vue'
 import JourneySlide from './components/JourneySlide.vue'
@@ -42,14 +41,9 @@ const handleStartSlideshow = () => {
     <div class="nav-dots">
       <NavigationDots />
     </div>
-    
-    <!-- Navbar -->
-    <div class="navbar">
-      <Navbar />
-    </div>
-    
+
     <!-- Main Content -->
-    <div class="relative lg:absolute lg:right-[8%] lg:top-0 z-10 w-full lg:w-[45%] pt-16 sm:pt-20 lg:pt-0">
+    <div class="relative lg:absolute lg:right-[8%] lg:top-0 z-10 w-full lg:w-[45%]">
       <!-- Project Carousel -->
       <div class="project-carousel">
         <ProjectCarousel />
@@ -61,9 +55,8 @@ const handleStartSlideshow = () => {
       </div>
     </div>
     
-    <!-- Journey Slideshow -->
+    <!-- Journey Slideshow - Pre-rendered but hidden -->
     <JourneySlide
-      v-if="currentSlide >= 0"
       :current-slide="currentSlide"
       :total-slides="totalSlides"
       :slides="slides"
@@ -150,7 +143,6 @@ const handleStartSlideshow = () => {
 </template>
 
 <style scoped>
-.navbar,
 .hero-section,
 .project-carousel,
 .nav-dots,

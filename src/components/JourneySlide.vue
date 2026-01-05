@@ -1,7 +1,7 @@
 <template>
   <div class="journey-slide-container fixed inset-0 flex items-center justify-center z-20 opacity-0 pointer-events-none">
     <!-- Journey Overlay -->
-    <div class="journey-overlay fixed inset-0 bg-black/90 pointer-events-none"></div>
+    <div class="journey-overlay fixed inset-0 bg-black/90 pointer-events-none opacity-0"></div>
 
     <!-- Slide Content -->
     <div class="journey-slide relative z-10 max-w-4xl mx-auto px-6 sm:px-8 lg:px-12">
@@ -78,5 +78,6 @@ const currentSlideData = computed(() => {
 
 .journey-content > * {
   will-change: opacity, transform;
+  opacity: 0;
 }
 </style>
