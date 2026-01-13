@@ -108,7 +108,7 @@ export function useJourneySlideshow() {
 
     // Hide homepage content
     timeline.to(
-      [".hero-section", ".project-carousel", ".nav-dots"],
+      [".hero-section", ".nav-dots"],
       {
         opacity: 0,
         duration: 0.25,
@@ -295,7 +295,7 @@ export function useJourneySlideshow() {
 
     // Show homepage content
     exitTimeline.to(
-      [".hero-section", ".project-carousel", ".nav-dots"],
+      [".hero-section", ".nav-dots"],
       {
         opacity: 1,
         duration: 0.4,
