@@ -4,7 +4,7 @@
         <h1
             class="hero-title text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-normal leading-tight tracking-wide sm:tracking-widest"
             style="
-                text-shadow: 0px 0px 23px rgba(0, 0, 0, 0.25);
+                text-shadow: 0px 4px 24px rgba(0, 0, 0, 0.4);
                 font-family: &quot;Istok Web&quot;, sans-serif;
             "
         >
@@ -18,6 +18,7 @@
             <!-- Software Engineer Badge -->
             <div
                 class="w-full sm:w-auto sm:min-w-[18rem] lg:w-72 h-14 sm:h-16 bg-white/10 backdrop-blur-[5px] rounded-[55px] border border-white flex items-center justify-center px-4"
+                style="text-shadow: 0px 2px 16px rgba(0, 0, 0, 0.3)"
             >
                 <span
                     class="text-white text-xl sm:text-2xl font-medium leading-7"
@@ -48,6 +49,7 @@
                 </div>
                 <span
                     class="text-white/75 text-base sm:text-lg font-medium leading-5"
+                    style="text-shadow: 0px 2px 12px rgba(0, 0, 0, 0.3)"
                     >Watch About me</span
                 >
             </button>

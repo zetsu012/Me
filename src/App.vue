@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import bgImage from "./assets/bckground_image.svg";
-import Navbar from "./components/Navbar.vue";
+import SidebarNav from "./components/SidebarNav.vue";
 import HeroSection from "./components/HeroSection.vue";
 import JourneySlide from "./components/JourneySlide.vue";
 import JourneyTimeline from "./components/JourneyTimeline.vue";
@@ -32,8 +32,8 @@ const handleStartSlideshow = () => {
 
 <template>
     <div class="min-h-screen w-full relative overflow-hidden">
-        <!-- Navbar -->
-        <Navbar v-model="currentView" :is-playing="isPlaying" />
+        <!-- Sidebar Navigation -->
+        <SidebarNav v-model="currentView" :is-playing="isPlaying" />
 
         <!-- Home View -->
         <div v-if="currentView === 'home'" class="home-view">
@@ -45,7 +45,12 @@ const handleStartSlideshow = () => {
 
             <!-- Gradient Overlay (becomes solid dark during slideshow) -->
             <div
-                class="bg-overlay absolute inset-0 bg-gradient-to-l from-black/50 to-black/0 pointer-events-none z-0"
+                class="bg-overlay absolute inset-0 bg-gradient-to-l from-black/60 to-black/10 pointer-events-none z-0"
+            ></div>
+
+            <!-- Hero Text Backdrop for Enhanced Readability -->
+            <div
+                class="hero-text-backdrop absolute right-0 top-0 bottom-0 w-full lg:w-[80%] pointer-events-none z-5"
             ></div>
 
             <!-- Solid Dark Overlay for Slideshow -->
@@ -231,6 +236,17 @@ const handleStartSlideshow = () => {
     transition:
         opacity 0.5s ease-in-out,
         backdrop-filter 0.5s ease-in-out;
+}
+
+/* Hero Text Backdrop */
+.hero-text-backdrop {
+    background: radial-gradient(
+        ellipse at center right,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.4) 40%,
+        transparent 70%
+    );
+    transition: opacity 0.5s ease-in-out;
 }
 
 /* Elegant Slideshow Controls */
