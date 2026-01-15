@@ -33,7 +33,7 @@ const handleStartSlideshow = () => {
 <template>
     <div class="min-h-screen w-full relative overflow-hidden">
         <!-- Navbar -->
-        <Navbar v-model="currentView" />
+        <Navbar v-model="currentView" :is-playing="isPlaying" />
 
         <!-- Home View -->
         <div v-if="currentView === 'home'" class="home-view">
@@ -60,7 +60,7 @@ const handleStartSlideshow = () => {
 
             <!-- Main Content -->
             <div
-                class="relative lg:absolute lg:right-[8%] lg:top-0 z-10 w-full lg:w-[45%] pt-20"
+                class="relative lg:absolute lg:right-[8%] lg:top-1/2 lg:-translate-y-1/2 z-10 w-full lg:w-[45%] pt-20 lg:pt-0"
             >
                 <!-- Hero Section -->
                 <div class="hero-section">

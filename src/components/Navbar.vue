@@ -1,5 +1,10 @@
 <template>
-    <nav class="fixed top-0 left-0 right-0 z-50">
+    <nav
+        class="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+        :class="{
+            'opacity-0 pointer-events-none -translate-y-full': isPlaying,
+        }"
+    >
         <!-- Nav Container -->
         <div class="nav-container">
             <div class="max-w-7xl mx-auto px-6 lg:px-8">
@@ -27,7 +32,6 @@
                                 />
                             </svg>
                             <span>Home</span>
-                            <div class="nav-indicator"></div>
                         </button>
                         <button
                             @click="navigateTo('journey')"
@@ -50,7 +54,6 @@
                                 />
                             </svg>
                             <span>Journey</span>
-                            <div class="nav-indicator"></div>
                         </button>
                     </div>
 
@@ -132,6 +135,10 @@ const props = defineProps({
         type: String,
         default: "home",
     },
+    isPlaying: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -153,6 +160,9 @@ const toggleMobile = () => {
 /* Navigation Container */
 .nav-container {
     background: rgb(124 124 124 / 6%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Navigation Buttons */
@@ -160,6 +170,7 @@ const toggleMobile = () => {
     position: relative;
     display: flex;
     align-items: center;
+    justify-content: center;
     padding: 0.75rem 1.5rem;
     color: rgba(255, 255, 255, 0.7);
     background: transparent;
@@ -194,25 +205,8 @@ const toggleMobile = () => {
     transform: translateY(-2px);
 }
 
-.nav-indicator {
-    position: absolute;
-    bottom: 0.25rem;
-    left: 50%;
-    transform: translateX(-50%) scaleX(0);
-    width: 60%;
-    height: 3px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
-    border-radius: 2px;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
 .nav-button-active {
     color: rgba(255, 255, 255, 1);
-    background: rgba(102, 126, 234, 0.15);
-}
-
-.nav-button-active .nav-indicator {
-    transform: translateX(-50%) scaleX(1);
 }
 
 /* Mobile Menu Button */

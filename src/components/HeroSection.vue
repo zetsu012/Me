@@ -1,10 +1,8 @@
 <template>
-    <div
-        class="relative lg:absolute lg:top-[50vh] w-full px-4 sm:px-6 lg:px-0 mt-20 sm:mt-24 lg:mt-0"
-    >
+    <div class="relative w-full px-4 sm:px-6 lg:px-0">
         <!-- Hero Text -->
         <h1
-            class="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-normal leading-tight tracking-wide sm:tracking-widest"
+            class="hero-title text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-normal leading-tight tracking-wide sm:tracking-widest"
             style="
                 text-shadow: 0px 0px 23px rgba(0, 0, 0, 0.25);
                 font-family: &quot;Istok Web&quot;, sans-serif;
@@ -15,7 +13,7 @@
 
         <!-- Action Buttons Row -->
         <div
-            class="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 action-buttons"
+            class="hero-actions flex flex-col sm:flex-row items-center gap-4 sm:gap-6 action-buttons"
         >
             <!-- Software Engineer Badge -->
             <div
@@ -63,6 +61,28 @@ defineEmits(["start-slideshow"]);
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Istok+Web:wght@400;700&display=swap");
+
+/* Hero Animations */
+.hero-title {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+}
+
+.hero-actions {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 0.3s forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 .action-buttons {
     margin-top: 1.5rem;
