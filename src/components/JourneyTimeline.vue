@@ -1,669 +1,462 @@
 <template>
     <div class="journey-wrapper">
-        <!-- Background matching homepage -->
-        <div class="journey-bg"></div>
+        <!-- Exact Background Match from App.vue -->
+        <div
+            class="bg-image fixed inset-0 bg-cover bg-center -z-10"
+            :style="{ backgroundImage: `url(${bgImage})` }"
+        ></div>
 
-        <!-- Gradient Overlay -->
-        <div class="gradient-overlay"></div>
+        <!-- 80% Opaque Overlay requested by user -->
+        <div class="bg-overlay fixed inset-0 bg-black/80 pointer-events-none z-0"></div>
 
-        <!-- Content -->
         <div class="journey-content">
-            <!-- Header -->
             <div class="journey-header">
                 <h1 class="journey-title">My Journey</h1>
-                <p class="journey-subtitle">From 2020 to Present</p>
+                <p class="journey-subtitle">Dev Log & Professional Milestones</p>
             </div>
 
-            <!-- Timeline Container -->
             <div class="timeline-container">
-                <!-- Central Line -->
-                <div class="timeline-line"></div>
+                <div class="timeline-axis"></div>
 
-                <!-- Timeline Items -->
-                <div class="timeline-items">
-                    <!-- 2020-2024 Education -->
-                    <div class="timeline-item" data-year="2020-2024">
-                        <div class="timeline-marker">
-                            <div class="marker-dot"></div>
-                            <div class="marker-ring"></div>
-                        </div>
-                        <div class="timeline-card">
-                            <div class="card-icon">🎓</div>
-                            <h3 class="card-title">Education Foundation</h3>
-                            <p class="card-period">2020 - 2024</p>
-                            <p class="card-subtitle">
-                                B.Tech Information Technology
-                            </p>
-                            <p class="card-location">
-                                Sikkim Manipal Institute of Technology
-                            </p>
-                            <div class="card-detail">
-                                <span class="detail-label">CGPA:</span>
-                                <span class="detail-value">8.6</span>
-                            </div>
-                            <div class="card-tags">
-                                <span class="tag">Python</span>
-                                <span class="tag">Java</span>
-                                <span class="tag">DBMS</span>
-                                <span class="tag">Data Structures</span>
-                            </div>
+                <div 
+                    v-for="(item, index) in journeyItems" 
+                    :key="index"
+                    class="timeline-row"
+                    :class="{ 'animate-in': visibleItems.has(index), 'is-expanded': expandedItems.has(index) }"
+                    :ref="el => { if (el) itemRefs[index] = el }"
+                >
+                    <div class="date-col">
+                        <span class="year-text" :class="{ 'highlight-green': item.isCurrent }">{{ item.date }}</span>
+                        <span v-if="item.subDate" class="month-text">{{ item.subDate }}</span>
+                    </div>
+
+                    <div class="marker-col">
+                        <div class="timeline-dot" :class="{ 'current-dot': item.isCurrent, 'future-dot': item.isFuture }">
+                            <div v-if="item.isCurrent" class="pulse-ring"></div>
                         </div>
                     </div>
 
-                    <!-- May 2023 Research -->
-                    <div class="timeline-item" data-year="2023">
-                        <div class="timeline-marker">
-                            <div class="marker-dot"></div>
-                            <div class="marker-ring"></div>
+                    <div class="content-col glass-card" @click="toggleExpand(index)">
+                        <div class="flex items-center justify-between gap-4">
+                            <h3 class="role-title" :class="{ 'text-emerald-300': item.isCurrent }">{{ item.title }}</h3>
+                            <button class="expand-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 transition-transform duration-300" :class="{ 'rotate-180': expandedItems.has(index) }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
                         </div>
-                        <div class="timeline-card">
-                            <div class="card-icon">🔬</div>
-                            <h3 class="card-title">Research Internship</h3>
-                            <p class="card-period">May 2023 - June 2023</p>
-                            <p class="card-subtitle">NIT Raipur</p>
-                            <p class="card-description">
-                                Comparative Analysis on Transformer Models using
-                                Sentiment Analysis
+                        
+                        <p v-if="item.company" class="company-name">{{ item.company }}</p>
+                        
+                        <div class="description-container">
+                            <p class="role-desc">
+                                {{ expandedItems.has(index) ? item.fullContent : item.description }}
                             </p>
-                            <div class="card-tags">
-                                <span class="tag">Transformers</span>
-                                <span class="tag">NLP</span>
-                                <span class="tag">Sentiment Analysis</span>
-                                <span class="tag">Research</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Jan 2024 NIC -->
-                    <div class="timeline-item" data-year="2024">
-                        <div class="timeline-marker">
-                            <div class="marker-dot"></div>
-                            <div class="marker-ring"></div>
-                        </div>
-                        <div class="timeline-card">
-                            <div class="card-icon">💼</div>
-                            <h3 class="card-title">
-                                Full Stack Developer Intern
-                            </h3>
-                            <p class="card-period">January 2024 - May 2024</p>
-                            <p class="card-subtitle">
-                                National Informatics Centre
-                            </p>
-                            <p class="card-description">
-                                Developed eService web applications with Angular
-                                & Django, focusing on data integrity and
-                                security
-                            </p>
-                            <div class="card-tags">
-                                <span class="tag">Angular</span>
-                                <span class="tag">Django</span>
-                                <span class="tag">PostgreSQL</span>
-                                <span class="tag">JWT Auth</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Aug 2024 WebMD - Current -->
-                    <div class="timeline-item current" data-year="2024-Present">
-                        <div class="timeline-marker">
-                            <div class="marker-dot current-marker"></div>
-                            <div class="marker-ring current-ring"></div>
-                            <div class="marker-pulse"></div>
-                        </div>
-                        <div class="timeline-card current-card">
-                            <div class="card-icon">🚀</div>
-                            <h3 class="card-title">
-                                Associate Software Engineer
-                            </h3>
-                            <p class="card-period">August 2024 - Present</p>
-                            <p class="card-subtitle">WebMD</p>
-                            <p class="card-description">
-                                Building AI-powered tools to enhance developer
-                                efficiency by 40%
-                            </p>
-
-                            <!-- Projects -->
-                            <div class="projects-section">
-                                <div class="project-item">
-                                    <div class="project-icon">🌐</div>
-                                    <div class="project-content">
-                                        <h4 class="project-title">
-                                            AI Gateway Service
-                                        </h4>
-                                        <p class="project-desc">
-                                            Multi-provider AI service with cost
-                                            tracking & rate limiting
-                                        </p>
+                            
+                            <div v-if="expandedItems.has(index)" class="expanded-content-area">
+                                <div v-if="item.projects" class="projects-mini-list mt-6">
+                                    <h4 class="text-white/40 text-xs font-bold uppercase tracking-widest mb-4">Key Projects & Contributions</h4>
+                                    <div v-for="(project, pIdx) in item.projects" :key="pIdx" class="project-mini-item">
+                                        <span class="project-mini-title">{{ project.title }}</span>
+                                        <p class="project-mini-desc">{{ project.desc }}</p>
                                     </div>
                                 </div>
-                                <div class="project-item">
-                                    <div class="project-icon">💻</div>
-                                    <div class="project-content">
-                                        <h4 class="project-title">AI SDLC</h4>
-                                        <p class="project-desc">
-                                            AI-Powered IDE & Agile Story
-                                            Generator for rapid development
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="project-item">
-                                    <div class="project-icon">📊</div>
-                                    <div class="project-content">
-                                        <h4 class="project-title">
-                                            Productivity Metrics System
-                                        </h4>
-                                        <p class="project-desc">
-                                            Org-level dashboard tracking
-                                            developer productivity & AI usage
-                                        </p>
+
+                                <div v-if="item.logs" class="diary-entries mt-8">
+                                    <h4 class="text-white/40 text-xs font-bold uppercase tracking-widest mb-4">Daily Learning Logs</h4>
+                                    <div v-for="(log, lIdx) in item.logs" :key="lIdx" class="diary-item">
+                                        <div class="diary-date">{{ log.date }}</div>
+                                        <div class="diary-text">{{ log.text }}</div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="card-tags">
-                                <span class="tag">Vue 3</span>
-                                <span class="tag">FastAPI</span>
-                                <span class="tag">React</span>
-                                <span class="tag">Python</span>
-                                <span class="tag">AWS</span>
-                                <span class="tag">Agentic AI</span>
-                                <span class="tag">LangChain</span>
-                            </div>
                         </div>
-                    </div>
 
-                    <!-- Future -->
-                    <div class="timeline-item future" data-year="2025-2026">
-                        <div class="timeline-marker">
-                            <div class="marker-dot future-marker"></div>
-                            <div class="marker-ring"></div>
-                        </div>
-                        <div class="timeline-card future-card">
-                            <div class="card-icon">✨</div>
-                            <h3 class="card-title">The Future Ahead</h3>
-                            <p class="card-period">2025 - 2026</p>
-                            <p class="card-description">
-                                Continuing to build innovative AI-powered
-                                solutions and expanding expertise in agentic AI
-                                systems
-                            </p>
-                            <div class="card-tags">
-                                <span class="tag future-tag"
-                                    >AI Innovation</span
-                                >
-                                <span class="tag future-tag">Leadership</span>
-                                <span class="tag future-tag">Scale</span>
-                            </div>
+                        <div class="tags-row mt-4">
+                            <span v-for="tag in item.tags" :key="tag" class="tag" :class="{ 'current-tag': item.isCurrent }">
+                                {{ tag }}
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Bottom blur matching homepage -->
+        
         <div class="bottom-blur"></div>
     </div>
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
+import bgImage from "../assets/bckground_image.svg";
+
+const expandedItems = ref(new Set());
+const visibleItems = ref(new Set());
+const itemRefs = ref([]);
+
+const toggleExpand = (index) => {
+    if (expandedItems.value.has(index)) {
+        expandedItems.value.delete(index);
+    } else {
+        expandedItems.value.add(index);
+    }
+};
+
+const journeyItems = ref([
+    {
+        date: "Jan 2026",
+        subDate: "The Diary Begins",
+        title: "Personal Learning Log",
+        description: "Started a digital diary to track daily AI breakthroughs and project milestones...",
+        fullContent: "Maintaining a daily log helps in reflecting on complex problems solved during the development of Agentic AI systems. It serves as a personal knowledge base and a public commitment to continuous growth.",
+        isCurrent: true,
+        tags: ["Learning", "Reflection", "Growth"],
+        logs: [
+            { date: "Jan 22, 2026", text: "Successfully refactored the portfolio into a data-driven architecture. Implemented expandable entries for better storytelling." },
+            { date: "Jan 21, 2026", text: "Explored advanced Vue 3 transition patterns for smooth height expansion in vertical lists." }
+        ]
+    },
+    {
+        date: "2025 - 2026",
+        title: "The Future Ahead",
+        description: "Focusing on building innovative AI-powered solutions and expanding expertise in agentic AI...",
+        fullContent: "My goal is to push the boundaries of how developers interact with AI. This includes creating more autonomous agents that can handle end-to-end SDLC tasks with minimal supervision, while maintaining high code quality and safety standards.",
+        isFuture: true,
+        tags: ["AI Innovation", "Leadership", "Scale"]
+    },
+    {
+        date: "Present",
+        subDate: "Aug 2024",
+        title: "Associate Software Engineer",
+        company: "WebMD",
+        description: "Building AI-powered tools to enhance developer efficiency by 40%...",
+        fullContent: "Working at the intersection of healthcare and tech, I focus on automating repetitive developer tasks. This involves fine-tuning LLMs for code generation, building custom CLI tools, and integrating AI into the core development workflow to reduce friction.",
+        isCurrent: true,
+        projects: [
+            { title: "AI Gateway Service", desc: "A unified API for multiple LLM providers with built-in cost management." },
+            { title: "AI SDLC", desc: "Integrating AI agents directly into the IDE to automate unit testing and story generation." }
+        ],
+        tags: ["Vue 3", "FastAPI", "Agentic AI", "AWS"]
+    },
+    {
+        date: "2024",
+        subDate: "Jan - May",
+        title: "Full Stack Developer Intern",
+        company: "National Informatics Centre",
+        description: "Developed eService web applications with Angular & Django. Focused on security...",
+        fullContent: "Collaborated on high-stakes government projects, ensuring robust data handling and secure user authentication. I learned the importance of scalable architecture and thorough testing in production environments with millions of users.",
+        tags: ["Angular", "Django", "PostgreSQL", "JWT"]
+    },
+    {
+        date: "2023",
+        subDate: "May - Jun",
+        title: "Research Internship",
+        company: "NIT Raipur",
+        description: "Conducted comparative analysis on Transformer Models using Sentiment Analysis...",
+        fullContent: "Deep-dived into the mechanics of attention mechanisms and transformer blocks. I fine-tuned various models (BERT, RoBERTa) and analyzed their performance on specialized datasets, eventually contributing to a published research paper.",
+        tags: ["NLP", "PyTorch", "Transformers"]
+    },
+    {
+        date: "2020 - 2024",
+        title: "Education Foundation",
+        company: "Sikkim Manipal Institute of Technology",
+        description: "B.Tech in Information Technology. Graduated with a CGPA of 8.6...",
+        fullContent: "Explored the fundamentals of Computer Science, focusing heavily on Algorithms, Data Structures, and Software Engineering principles. Participated in various hackathons and built several full-stack side projects.",
+        tags: ["Data Structures", "Algorithms", "Java"]
+    }
+]);
 
 onMounted(() => {
     const observer = new IntersectionObserver(
         (entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add("visible");
+                    const index = itemRefs.value.indexOf(entry.target);
+                    if (index !== -1) visibleItems.value.add(index);
                 }
             });
         },
-        { threshold: 0.2 },
+        { threshold: 0.1 }
     );
 
-    document.querySelectorAll(".timeline-item").forEach((item) => {
-        observer.observe(item);
+    itemRefs.value.forEach(el => {
+        if (el) observer.observe(el);
     });
 });
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Istok+Web:wght@400;700&display=swap');
+
 .journey-wrapper {
     position: relative;
     min-height: 100vh;
     width: 100%;
     overflow-x: hidden;
-    background: #000;
-    padding-top: 5rem;
-}
-
-/* Background matching homepage */
-.journey-bg {
-    position: fixed;
-    inset: 0;
-    background: url("/src/assets/bckground_image.svg") center/cover;
-    z-index: 0;
-}
-
-.gradient-overlay {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(to left, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
-    z-index: 1;
+    background: #0b0b0f;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+    font-family: 'Inter', sans-serif;
 }
 
 .journey-content {
     position: relative;
     z-index: 10;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem 1rem 4rem;
+    padding: 0 1.5rem;
 }
 
-/* Header */
 .journey-header {
     text-align: center;
-    margin-bottom: 4rem;
-    opacity: 0;
-    animation: fadeInDown 0.8s ease-out forwards;
-}
-
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    margin-bottom: 5rem;
 }
 
 .journey-title {
-    font-size: 3rem;
+    font-family: 'Istok Web', sans-serif;
+    font-size: 3.5rem;
     font-weight: 700;
     color: white;
     margin-bottom: 0.5rem;
-    text-shadow: 0px 0px 30px rgba(0, 0, 0, 0.5);
 }
 
 .journey-subtitle {
-    font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.7);
-    text-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+    font-size: 1.125rem;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 
-/* Timeline */
 .timeline-container {
     position: relative;
-    padding: 2rem 0;
-}
-
-.timeline-line {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(
-        to bottom,
-        rgba(99, 102, 241, 0.3),
-        rgba(99, 102, 241, 0.6),
-        rgba(99, 102, 241, 0.3)
-    );
-    transform: translateX(-50%);
-}
-
-.timeline-items {
+    max-width: 900px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     gap: 3rem;
 }
 
-/* Timeline Item */
-.timeline-item {
-    position: relative;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 2rem;
-    align-items: center;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.6s ease-out;
+.timeline-axis {
+    position: absolute;
+    left: 140px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    transform: translateX(-50%);
 }
 
-.timeline-item.visible {
+.timeline-row {
+    display: flex;
+    gap: 2rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.timeline-row.animate-in {
     opacity: 1;
     transform: translateY(0);
 }
 
-.timeline-item:nth-child(odd) .timeline-card {
-    grid-column: 1;
+.date-col {
+    width: 140px;
+    flex-shrink: 0;
+    text-align: right;
+    padding-top: 0.25rem;
+    display: flex;
+    flex-direction: column;
 }
 
-.timeline-item:nth-child(even) .timeline-card {
-    grid-column: 3;
-}
-
-.timeline-marker {
-    grid-column: 2;
-    position: relative;
-    width: 24px;
-    height: 24px;
-    z-index: 10;
-}
-
-.marker-dot {
-    width: 16px;
-    height: 16px;
-    background: #6366f1;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
-}
-
-.marker-ring {
-    width: 24px;
-    height: 24px;
-    border: 2px solid rgba(99, 102, 241, 0.4);
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-/* Current marker animation */
-.current-marker {
-    background: #10b981;
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
-}
-
-.current-ring {
-    border-color: rgba(16, 185, 129, 0.6);
-    animation: ring-pulse 2s ease-in-out infinite;
-}
-
-.marker-pulse {
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: rgba(16, 185, 129, 0.3);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes ring-pulse {
-    0%,
-    100% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: translate(-50%, -50%) scale(1.2);
-        opacity: 0.8;
-    }
-}
-
-@keyframes pulse {
-    0% {
-        transform: translate(-50%, -50%) scale(1);
-        opacity: 0.6;
-    }
-    100% {
-        transform: translate(-50%, -50%) scale(2);
-        opacity: 0;
-    }
-}
-
-.future-marker {
-    background: rgba(99, 102, 241, 0.4);
-    box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
-}
-
-/* Cards */
-.timeline-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 1rem;
-    padding: 1.5rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-}
-
-.timeline-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(99, 102, 241, 0.2);
-    border-color: rgba(99, 102, 241, 0.3);
-}
-
-.current-card {
-    background: rgba(16, 185, 129, 0.05);
-    border-color: rgba(16, 185, 129, 0.3);
-}
-
-.current-card:hover {
-    box-shadow: 0 12px 40px rgba(16, 185, 129, 0.2);
-}
-
-.future-card {
-    background: rgba(255, 255, 255, 0.03);
-    border-style: dashed;
-    border-color: rgba(255, 255, 255, 0.2);
-}
-
-.card-icon {
-    font-size: 2rem;
-    margin-bottom: 0.75rem;
-}
-
-.card-title {
-    font-size: 1.5rem;
+.year-text {
+    font-family: 'Istok Web', sans-serif;
+    font-size: 1.25rem;
     font-weight: 700;
-    color: white;
-    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
 }
 
-.card-period {
-    font-size: 0.875rem;
-    color: #6366f1;
+.month-text {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.4);
     font-weight: 600;
-    margin-bottom: 0.5rem;
 }
 
-.current-card .card-period {
+.highlight-green {
     color: #10b981;
 }
 
-.card-subtitle {
-    font-size: 1.125rem;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-.card-location {
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.6);
-    margin-bottom: 0.75rem;
-}
-
-.card-description {
-    font-size: 0.9375rem;
-    color: rgba(255, 255, 255, 0.7);
-    line-height: 1.6;
-    margin-bottom: 1rem;
-}
-
-.card-detail {
+.marker-col {
+    position: relative;
     display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    justify-content: center;
+}
+
+.timeline-dot {
+    width: 14px;
+    height: 14px;
+    background: #1f2937;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    z-index: 5;
+    position: absolute;
+    top: 0.6rem;
+}
+
+.current-dot {
+    background: #10b981;
+    border-color: #10b981;
+}
+
+.pulse-ring {
+    position: absolute;
+    inset: -6px;
+    border: 2px solid rgba(16, 185, 129, 0.3);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+
+.future-dot {
+    border-style: dotted;
+    background: transparent;
+}
+
+/* Simplified Glass Card Style */
+.content-col.glass-card {
+    flex: 1;
+    background: rgba(30, 30, 35, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 1.75rem;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.content-col.glass-card:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.is-expanded .content-col.glass-card {
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+.role-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+}
+
+.expand-btn {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.company-name {
     font-size: 0.9375rem;
+    color: rgba(129, 140, 248, 0.9); /* Company color from sidebar theme */
+    margin-top: 0.125rem;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
 }
 
-.detail-label {
-    color: rgba(255, 255, 255, 0.6);
+.role-desc {
+    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.85); /* Improved contrast like bulletin list */
+    line-height: 1.6;
 }
 
-.detail-value {
-    color: #6366f1;
+.expanded-content-area {
+    margin-top: 1rem;
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.projects-mini-list, .diary-entries {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 1.5rem;
+}
+
+.project-mini-item {
+    margin-bottom: 1rem;
+}
+
+.project-mini-title {
+    color: white;
+    font-size: 1rem;
     font-weight: 600;
 }
 
-/* Projects Section */
-.projects-section {
-    margin: 1.5rem 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+.project-mini-desc {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 0.25rem;
 }
 
-.project-item {
+.diary-item {
     display: flex;
     gap: 1rem;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    margin-bottom: 1rem;
 }
 
-.project-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(16, 185, 129, 0.3);
-}
-
-.project-icon {
-    font-size: 1.5rem;
+.diary-date {
+    font-family: 'Istok Web', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6366f1;
+    width: 100px;
     flex-shrink: 0;
 }
 
-.project-content {
-    flex: 1;
-}
-
-.project-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: white;
-    margin-bottom: 0.25rem;
-}
-
-.project-desc {
+.diary-text {
     font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.6);
-    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.7);
 }
 
-/* Tags */
-.card-tags {
+.tags-row {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-top: 1rem;
 }
 
 .tag {
-    padding: 0.375rem 0.875rem;
-    background: rgba(99, 102, 241, 0.15);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    border-radius: 9999px;
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.9);
+    padding: 0.25rem 0.75rem;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 0.5rem;
+    color: white;
     font-weight: 500;
-    transition: all 0.3s ease;
 }
 
-.tag:hover {
-    background: rgba(99, 102, 241, 0.25);
-    border-color: rgba(99, 102, 241, 0.5);
-    transform: translateY(-2px);
-}
-
-.current-card .tag {
-    background: rgba(16, 185, 129, 0.15);
+.current-tag {
     border-color: rgba(16, 185, 129, 0.3);
+    background: rgba(16, 185, 129, 0.1);
 }
 
-.current-card .tag:hover {
-    background: rgba(16, 185, 129, 0.25);
-    border-color: rgba(16, 185, 129, 0.5);
-}
-
-.future-tag {
-    opacity: 0.6;
-    background: rgba(99, 102, 241, 0.1);
-    border-color: rgba(99, 102, 241, 0.2);
-}
-
-/* Bottom Blur */
 .bottom-blur {
     position: fixed;
     bottom: 0;
-    left: -10%;
-    width: 24rem;
-    height: 24rem;
-    background: rgba(0, 0, 0, 0.75);
-    filter: blur(50px);
+    left: 0;
+    width: 40rem;
+    height: 40rem;
+    background: radial-gradient(circle at bottom left, rgba(99, 102, 241, 0.1), transparent 70%);
+    filter: blur(80px);
+    pointer-events: none;
     z-index: 5;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-    .timeline-line {
-        left: 2rem;
-    }
-
-    .timeline-item {
-        grid-template-columns: auto 1fr;
-        gap: 1.5rem;
-    }
-
-    .timeline-item:nth-child(odd) .timeline-card,
-    .timeline-item:nth-child(even) .timeline-card {
-        grid-column: 2;
-    }
-
-    .timeline-marker {
-        grid-column: 1;
-    }
-}
-
 @media (max-width: 768px) {
-    .journey-title {
-        font-size: 2rem;
-    }
-
-    .journey-subtitle {
-        font-size: 1rem;
-    }
-
-    .timeline-line {
-        left: 1rem;
-    }
-
-    .timeline-item {
-        gap: 1rem;
-    }
-
-    .card-title {
-        font-size: 1.25rem;
-    }
-
-    .projects-section {
-        gap: 0.75rem;
-    }
-
-    .project-item {
-        flex-direction: column;
-        text-align: center;
-    }
+    .timeline-axis { left: 0; }
+    .date-col { width: 100%; text-align: left; margin-bottom: 1rem; }
+    .timeline-row { flex-direction: column; gap: 0; }
+    .timeline-dot { left: 0; }
+    .content-col.glass-card { margin-left: 1rem; }
 }
 </style>
+
