@@ -18,13 +18,26 @@
             <div class="timeline-container">
                 <div class="timeline-axis"></div>
 
-                <div 
-                    v-for="(item, index) in journeyItems" 
-                    :key="index"
-                    class="timeline-row"
-                    :class="{ 'animate-in': visibleItems.has(index), 'is-expanded': expandedItems.has(index) }"
-                    :ref="el => { if (el) itemRefs[index] = el }"
-                >
+                <!-- Loading State -->
+                <div v-if="isLoading" class="flex justify-center items-center py-20">
+                    <div class="loading-spinner"></div>
+                    <p class="text-white/60 ml-4">Loading journey data...</p>
+                </div>
+
+                <!-- Error State -->
+                <div v-else-if="error" class="flex justify-center items-center py-20">
+                    <p class="text-red-400">{{ error }}</p>
+                </div>
+
+                <!-- Journey Items -->
+                <template v-else>
+                    <div 
+                        v-for="(item, index) in journeyItems" 
+                        :key="index"
+                        class="timeline-row"
+                        :class="{ 'animate-in': visibleItems.has(index), 'is-expanded': expandedItems.has(index) }"
+                        :ref="el => { if (el) itemRefs[index] = el }"
+                    >
                     <div class="date-col">
                         <span class="year-text" :class="{ 'highlight-green': item.isCurrent }">{{ item.date }}</span>
                         <span v-if="item.subDate" class="month-text">{{ item.subDate }}</span>
@@ -79,6 +92,7 @@
                         </div>
                     </div>
                 </div>
+                </template>
             </div>
         </div>
         
@@ -87,8 +101,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick, watch } from "vue";
 import bgImage from "../assets/bckground_image.svg";
+import { useJourneyData } from "../composables/useJourneyData";
 
 const expandedItems = ref(new Set());
 const visibleItems = ref(new Set());
@@ -102,6 +117,18 @@ const toggleExpand = (index) => {
     }
 };
 
+// Fetch journey data from D1 database
+const { journeyItems, isLoading, error } = useJourneyData();
+
+// Watch for when journey items are loaded and set up observers
+watch(journeyItems, async (newItems) => {
+    if (newItems && newItems.length > 0) {
+        await nextTick();
+        setupObserver();
+    }
+}, { immediate: true });
+
+/* OLD HARDCODED DATA - now fetched from D1
 const journeyItems = ref([
     {
         date: "Jan 2026",
@@ -165,14 +192,18 @@ const journeyItems = ref([
         tags: ["Data Structures", "Algorithms", "Java"]
     }
 ]);
+*/
 
-onMounted(() => {
+const setupObserver = () => {
     const observer = new IntersectionObserver(
         (entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     const index = itemRefs.value.indexOf(entry.target);
-                    if (index !== -1) visibleItems.value.add(index);
+                    if (index !== -1) {
+                        visibleItems.value.add(index);
+                        visibleItems.value = new Set(visibleItems.value); // Trigger reactivity
+                    }
                 }
             });
         },
@@ -182,6 +213,12 @@ onMounted(() => {
     itemRefs.value.forEach(el => {
         if (el) observer.observe(el);
     });
+};
+
+onMounted(() => {
+    if (journeyItems.value && journeyItems.value.length > 0) {
+        setupObserver();
+    }
 });
 </script>
 
@@ -437,6 +474,19 @@ onMounted(() => {
 .current-tag {
     border-color: rgba(16, 185, 129, 0.3);
     background: rgba(16, 185, 129, 0.1);
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: rgba(99, 102, 241, 0.8);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 .bottom-blur {
