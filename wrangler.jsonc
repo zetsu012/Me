@@ -1,13 +1,6 @@
 {
 	"name": "portfolio",
 	"compatibility_date": "2025-11-30",
-	"pages_build_output_dir": "./dist",
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "my_journey",
-			"database_id": "bb6333dc-af19-4825-9cf5-8bb88602db7c"
-		}
-	]
+	"pages_build_output_dir": "./dist"
 }
 

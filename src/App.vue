@@ -4,7 +4,6 @@ import bgImage from "./assets/bckground_image.svg";
 import SidebarNav from "./components/SidebarNav.vue";
 import HeroSection from "./components/HeroSection.vue";
 import JourneySlide from "./components/JourneySlide.vue";
-import JourneyTimeline from "./components/JourneyTimeline.vue";
 import NavigationDots from "./components/NavigationDots.vue";
 import { useJourneySlideshow } from "./composables/useJourneySlideshow";
 
@@ -218,8 +217,6 @@ const handleStartSlideshow = () => {
             ></div>
         </div>
 
-        <!-- Journey View -->
-        <JourneyTimeline v-if="currentView === 'journey'" />
     </div>
 </template>
 
