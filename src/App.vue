@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import bgImage from "./assets/bckground_image.svg";
 import SidebarNav from "./components/SidebarNav.vue";
+import MacOSView from "./components/MacOSView.vue";
 import HeroSection from "./components/HeroSection.vue";
 import JourneySlide from "./components/JourneySlide.vue";
 import NavigationDots from "./components/NavigationDots.vue";
@@ -32,7 +33,16 @@ const handleStartSlideshow = () => {
 <template>
     <div class="min-h-screen w-full relative overflow-hidden">
         <!-- Sidebar Navigation -->
-        <SidebarNav v-model="currentView" :is-playing="isPlaying" />
+        <SidebarNav v-if="currentView !== 'macos'" v-model="currentView" :is-playing="isPlaying" />
+        <!-- macOS exit button (shown when in macOS view) -->
+        <button v-if="currentView === 'macos'" class="macos-exit-btn" @click="currentView = 'home'" title="Back to Home">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+        </button>
+
+        <!-- macOS View -->
+        <MacOSView v-if="currentView === 'macos'" />
 
         <!-- Home View -->
         <div v-if="currentView === 'home'" class="home-view">
@@ -221,6 +231,29 @@ const handleStartSlideshow = () => {
 </template>
 
 <style scoped>
+.macos-exit-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    width: 44px;
+    height: 44px;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    transition: background 0.2s, transform 0.2s;
+}
+.macos-exit-btn:hover {
+    background: rgba(76, 110, 245, 0.7);
+    transform: scale(1.08);
+}
+
 .hero-section,
 .nav-dots,
 .bg-overlay,
