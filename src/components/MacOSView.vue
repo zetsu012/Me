@@ -39,7 +39,7 @@
               @keydown.enter="proceedToDesktop"
             />
             <button class="login-arrow" @click="proceedToDesktop">
-              <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="13" height="13">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a2e" stroke-width="2.5" width="13" height="13">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
             </button>
@@ -91,6 +91,18 @@
           </div>
           <div class="menubar-right">
             <span class="mb-status">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="13" height="13">
+                <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/>
+              </svg>
+            </span>
+            <span class="mb-status">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="12">
+                <rect x="0" y="2" width="19" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7"/>
+                <rect x="19.5" y="5" width="2" height="4" rx="1" fill="currentColor" opacity="0.5"/>
+                <rect x="1.5" y="3.5" width="13" height="7" rx="1.5" fill="currentColor" opacity="0.8"/>
+              </svg>
+            </span>
+            <span class="mb-status">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="14" height="14">
                 <path stroke-linecap="round" d="M1.5 8.5C5 5 8.6 3 12 3s7 2 10.5 5.5M5 12c1.9-2 4.3-3 7-3s5.1 1 7 3M8.5 15.5C9.6 14.4 10.8 14 12 14s2.4.4 3.5 1.5"/>
                 <circle cx="12" cy="19" r="0.75" fill="currentColor"/>
@@ -103,30 +115,13 @@
         <!-- Desktop Icons -->
         <div class="dsk-icon" style="top:48px;right:16px" @dblclick="openApp('finder')">
           <div class="dsk-icon-img">
-            <svg viewBox="0 0 40 40" width="48" height="48">
-              <rect width="40" height="40" rx="9" fill="url(#finder-grad)"/>
-              <defs>
-                <linearGradient id="finder-grad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stop-color="#56c1ff"/>
-                  <stop offset="100%" stop-color="#007aff"/>
-                </linearGradient>
-              </defs>
-              <ellipse cx="14" cy="20" rx="7" ry="9" fill="#f0f0f0"/>
-              <ellipse cx="26" cy="20" rx="7" ry="9" fill="white"/>
-              <circle cx="12" cy="18" r="2.5" fill="#007aff"/>
-              <circle cx="28" cy="18" r="2.5" fill="#555"/>
-              <path d="M11 24 Q14 27 17 24" stroke="#007aff" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-              <path d="M23 24 Q26 26 29 24" stroke="#555" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-            </svg>
+            <svg viewBox="0 0 60 60" width="56" height="56"><defs><linearGradient id="dfi" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#42a5f5"/><stop offset="100%" stop-color="#1e88e5"/></linearGradient></defs><rect width="60" height="60" rx="14" fill="url(#dfi)"/><ellipse cx="22" cy="26" rx="9" ry="11" fill="#1a3a6b"/><ellipse cx="24" cy="24" rx="4" ry="5.5" fill="white"/><circle cx="23" cy="24" r="2.2" fill="#1a3a6b"/><ellipse cx="38" cy="26" rx="9" ry="11" fill="#f5f5f5"/><ellipse cx="40" cy="24" rx="4" ry="5.5" fill="white"/><circle cx="39" cy="24" r="2.2" fill="#444"/><path d="M15 37 Q22 43 29 37" stroke="#1a3a6b" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M31 37 Q38 42 45 37" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
           </div>
           <div class="dsk-icon-label">Finder</div>
         </div>
-        <div class="dsk-icon" style="top:122px;right:16px" @dblclick="openApp('terminal')">
+        <div class="dsk-icon" style="top:124px;right:16px" @dblclick="openApp('terminal')">
           <div class="dsk-icon-img">
-            <svg viewBox="0 0 40 40" width="48" height="48">
-              <rect width="40" height="40" rx="9" fill="#1a1a1a"/>
-              <text x="7" y="24" font-family="monospace" font-size="13" fill="#00ff41">&#62;_</text>
-            </svg>
+            <svg viewBox="0 0 60 60" width="56" height="56"><defs><linearGradient id="dti" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3c3c3c"/><stop offset="100%" stop-color="#1a1a1a"/></linearGradient></defs><rect width="60" height="60" rx="14" fill="url(#dti)"/><text x="10" y="32" font-family="monospace" font-size="14" fill="#2ecc71" font-weight="bold">%</text><text x="20" y="32" font-family="monospace" font-size="12" fill="rgba(255,255,255,0.7)">ls</text><rect x="10" y="37" width="26" height="2" rx="1" fill="#2ecc71" opacity="0.4"/></svg>
           </div>
           <div class="dsk-icon-label">Terminal</div>
         </div>
@@ -140,9 +135,9 @@
         </div>
 
         <!-- WINDOWS -->
+        <TransitionGroup name="win">
         <div
-          v-for="win in windows"
-          v-show="!win.minimized"
+          v-for="win in openWindows"
           :key="win.id"
           class="mac-window"
           :style="{ left: win.x+'px', top: win.y+'px', width: win.w+'px', height: win.h+'px', zIndex: win.z }"
@@ -151,9 +146,9 @@
           <!-- Title Bar -->
           <div class="win-titlebar" @mousedown.stop="startDrag($event, win)">
             <div class="traffic-lights">
-              <div class="tl red" @click.stop="closeWin(win.id)" title="Close"></div>
-              <div class="tl yellow" @click.stop="minimizeWin(win.id)" title="Minimize"></div>
-              <div class="tl green" @click.stop title="Zoom"></div>
+              <div class="tl red" @click.stop="closeWin(win.id)"><span class="tl-sym">×</span></div>
+              <div class="tl yellow" @click.stop="minimizeWin(win.id)"><span class="tl-sym">−</span></div>
+              <div class="tl green" @click.stop><span class="tl-sym">+</span></div>
             </div>
             <div class="win-title">{{ win.title }}</div>
           </div>
@@ -308,6 +303,66 @@
               </div>
             </template>
 
+            <!-- MUSIC -->
+            <template v-else-if="win.app === 'music'">
+              <div class="music-layout">
+                <!-- Hidden YouTube iframe target -->
+                <div id="yt-music-div" style="position:absolute;width:1px;height:1px;opacity:0.01;pointer-events:none;overflow:hidden"></div>
+
+                <!-- Blurred background wash -->
+                <div class="music-bg-wash" :style="{ background: currentMusicTrack.art }"></div>
+
+                <!-- Left: vinyl art -->
+                <div class="music-vinyl-side">
+                  <div class="music-art-wrap">
+                    <div class="music-art" :class="{ 'music-art-spin': musicIsPlaying }" :style="{ background: currentMusicTrack.art }">
+                      <div class="music-vinyl-ring"></div>
+                      <div class="music-vinyl-center"></div>
+                      <div class="music-vinyl-hole"></div>
+                    </div>
+                    <div class="music-art-shadow" :style="{ background: currentMusicTrack.art }"></div>
+                  </div>
+                </div>
+
+                <!-- Right: info + controls -->
+                <div class="music-info-side">
+                  <!-- Equalizer bars -->
+                  <div class="music-eq" :class="{ 'music-eq-active': musicIsPlaying }">
+                    <div v-for="b in 9" :key="b" class="music-eq-bar"
+                      :style="{ animationDelay: (b * 0.07) + 's', animationDuration: (0.35 + b * 0.05) + 's' }"></div>
+                  </div>
+
+                  <!-- Track meta -->
+                  <div class="music-meta">
+                    <div class="music-track-name">{{ currentMusicTrack.title }}</div>
+                    <div class="music-track-artist">{{ currentMusicTrack.artist }}</div>
+                    <div class="music-track-album">{{ currentMusicTrack.album }}</div>
+                  </div>
+
+                  <!-- Play / Pause -->
+                  <div class="music-controls">
+                    <button class="mc-play" @click="toggleMusicPlay" :class="{ loading: !musicYtReady }">
+                      <svg v-if="!musicIsPlaying" viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M8 5v14l11-7z"/></svg>
+                      <svg v-else viewBox="0 0 24 24" fill="currentColor" width="28" height="28"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    </button>
+                  </div>
+
+                  <!-- Loading indicator -->
+                  <div v-if="!musicYtReady" class="music-loading">
+                    <div class="music-spin-ring"></div>
+                    <span>Loading…</span>
+                  </div>
+
+                  <!-- Volume -->
+                  <div class="music-vol-row">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13" style="opacity:0.4;flex-shrink:0"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+                    <input type="range" min="0" max="100" v-model="musicVolume" @input="setMusicVolume" class="music-vol-slider"/>
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15" style="opacity:0.4;flex-shrink:0"><path d="M3 9v6h4l5 5V4L7 9H3zm16.5 3c0-4.53-2.5-8.44-6.18-10.4v20.8c3.68-1.96 6.18-5.87 6.18-10.4z"/></svg>
+                  </div>
+                </div>
+              </div>
+            </template>
+
             <!-- ABOUT THIS MAC -->
             <template v-else-if="win.app === 'about'">
               <div class="about-layout">
@@ -338,6 +393,7 @@
 
           </div>
         </div>
+        </TransitionGroup>
 
         <!-- DOCK -->
         <div class="dock-outer">
@@ -350,10 +406,7 @@
               @mouseleave="hovDock = -1"
               :title="app.name">
               <div v-if="!app.sep" class="dock-icon-wrap" :style="dockScale(i)">
-                <div class="dock-icon-bg" :style="{ background: app.bg }">
-                  <span v-if="app.emoji" class="dock-emoji">{{ app.emoji }}</span>
-                  <span v-else class="dock-label-icon">{{ app.label }}</span>
-                </div>
+                <div class="dock-icon-bg" v-html="getDockIcon(app.id)"></div>
                 <div v-if="isOpen(app.id)" class="dock-dot"></div>
                 <div class="dock-tooltip">{{ app.name }}</div>
               </div>
@@ -477,6 +530,7 @@ const appCfg = {
   vscode:   { title: 'me — Visual Studio Code', w: 820, h: 540 },
   safari:   { title: 'Ankit Chhetri — Safari', w: 860, h: 560 },
   about:    { title: 'About This Mac', w: 500, h: 320 },
+  music:    { title: 'Music', w: 680, h: 420 },
 };
 
 function openApp(id) {
@@ -489,13 +543,14 @@ function openApp(id) {
 }
 
 function appLabel(id) {
-  return { finder:'Finder', terminal:'Terminal', vscode:'Code', safari:'Safari', about:'System Information' }[id] || id;
+  return { finder:'Finder', terminal:'Terminal', vscode:'Code', safari:'Safari', about:'System Information', music:'Music' }[id] || id;
 }
 
 function closeWin(id) { windows.value = windows.value.filter(w => w.id !== id); }
 function minimizeWin(id) { const w = windows.value.find(w => w.id === id); if (w) w.minimized = true; }
 function focusWin(id) { const w = windows.value.find(w => w.id === id); if (w) { w.z = ++zTop; focusedApp.value = appLabel(w.app); } }
 function isOpen(appId) { return windows.value.some(w => w.app === appId && !w.minimized); }
+const openWindows = computed(() => windows.value.filter(w => !w.minimized));
 
 function startDrag(e, win) {
   dragWin = win; dragDx = e.clientX - win.x; dragDy = e.clientY - win.y;
@@ -513,19 +568,37 @@ function stopDrag() { dragWin = null; }
 // ─── DOCK ────────────────────────────────────────────────────────────────────
 const hovDock = ref(-1);
 const dockApps = [
-  { id:'finder',   name:'Finder',   emoji:'',  label:'', bg:'linear-gradient(160deg,#56c1ff,#007aff)' },
-  { id:'safari',   name:'Safari',   emoji:'🧭', label:'', bg:'linear-gradient(160deg,#34aadc,#0071e3)' },
-  { id:'terminal', name:'Terminal', emoji:'',  label:'>_', bg:'#1a1a1a' },
-  { id:'vscode',   name:'VS Code',  emoji:'',  label:'⌨', bg:'linear-gradient(160deg,#1e1e3f,#4c6ef5)' },
-  { id:'',         name:'',         sep:true },
-  { id:'about',    name:'About',    emoji:'ℹ️', label:'', bg:'linear-gradient(160deg,#636e72,#2d3436)' },
+  { id:'finder',   name:'Finder'   },
+  { id:'safari',   name:'Safari'   },
+  { id:'music',    name:'Music'    },
+  { id:'terminal', name:'Terminal' },
+  { id:'vscode',   name:'VS Code'  },
+  { id:'',         name:'', sep:true },
+  { id:'about',    name:'About'    },
 ];
 
 function dockScale(i) {
   const d = Math.abs(hovDock.value - i);
-  const s = hovDock.value < 0 ? 1 : d === 0 ? 1.5 : d === 1 ? 1.25 : 1;
-  return { transform: `scale(${s}) translateY(${hovDock.value >= 0 && d <= 1 ? -8*(1.5-d*0.25) : 0}px)`, transition: 'transform 0.15s ease' };
+  const s = hovDock.value < 0 ? 1 : d === 0 ? 1.55 : d === 1 ? 1.25 : d === 2 ? 1.08 : 1;
+  const ty = hovDock.value >= 0 && d <= 2 ? -10 * Math.max(0, 1.55 - d * 0.5) : 0;
+  return { transform: `scale(${s}) translateY(${ty}px)`, transition: 'transform 0.18s cubic-bezier(0.34,1.56,0.64,1)' };
 }
+
+const dockIconSvgs = {
+  finder: `<svg viewBox="0 0 60 60" width="54" height="54"><rect width="60" height="60" rx="14" fill="url(#fg)"/><defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#64b5f6"/><stop offset="100%" stop-color="#1565c0"/></linearGradient></defs><rect x="2" y="2" width="56" height="56" rx="13" fill="url(#fg2)"/><defs><linearGradient id="fg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#42a5f5"/><stop offset="100%" stop-color="#1e88e5"/></linearGradient></defs><ellipse cx="22" cy="26" rx="9" ry="11" fill="#1a3a6b"/><ellipse cx="24" cy="24" rx="4" ry="5.5" fill="white"/><circle cx="23" cy="24" r="2.2" fill="#1a3a6b"/><ellipse cx="38" cy="26" rx="9" ry="11" fill="#f5f5f5"/><ellipse cx="40" cy="24" rx="4" ry="5.5" fill="white"/><circle cx="39" cy="24" r="2.2" fill="#444"/><path d="M15 37 Q22 43 29 37" stroke="#1a3a6b" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M31 37 Q38 42 45 37" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,
+
+  safari: `<svg viewBox="0 0 60 60" width="54" height="54"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#64d2ff"/><stop offset="100%" stop-color="#007aff"/></linearGradient></defs><rect width="60" height="60" rx="14" fill="url(#sg)"/><circle cx="30" cy="30" r="19" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/><circle cx="30" cy="30" r="19" fill="rgba(255,255,255,0.08)"/><line x1="30" y1="11" x2="30" y2="49" stroke="rgba(255,255,255,0.2)" stroke-width="1"/><line x1="11" y1="30" x2="49" y2="30" stroke="rgba(255,255,255,0.2)" stroke-width="1"/><polygon points="30,13 34,26 30,24 26,26" fill="#ff4444"/><polygon points="30,47 26,34 30,36 34,34" fill="rgba(255,255,255,0.5)"/><circle cx="30" cy="30" r="3" fill="white" opacity="0.9"/></svg>`,
+
+  terminal: `<svg viewBox="0 0 60 60" width="54" height="54"><defs><linearGradient id="tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3c3c3c"/><stop offset="100%" stop-color="#1a1a1a"/></linearGradient></defs><rect width="60" height="60" rx="14" fill="url(#tg)"/><text x="10" y="32" font-family="monospace" font-size="14" fill="#2ecc71" font-weight="bold">%</text><text x="20" y="32" font-family="monospace" font-size="12" fill="rgba(255,255,255,0.7)">ls</text><rect x="10" y="37" width="26" height="2" rx="1" fill="#2ecc71" opacity="0.4"/><text x="10" y="20" font-family="monospace" font-size="9" fill="rgba(255,255,255,0.25)">zsh — 80×24</text></svg>`,
+
+  vscode: `<svg viewBox="0 0 60 60" width="54" height="54"><defs><linearGradient id="vg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2b5f9e"/><stop offset="100%" stop-color="#1a3d6e"/></linearGradient></defs><rect width="60" height="60" rx="14" fill="url(#vg)"/><path d="M43 10 L20 32 L12 24 L8 28 L20 41 L47 14 Z" fill="white" opacity="0.95"/><path d="M43 10 L47 14 L47 46 L43 50 L20 32 Z" fill="rgba(255,255,255,0.55)"/></svg>`,
+
+  about: `<svg viewBox="0 0 60 60" width="54" height="54"><defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#555"/><stop offset="100%" stop-color="#1a1a1a"/></linearGradient></defs><rect width="60" height="60" rx="14" fill="url(#ag)"/><path d="M38 14C38 14 40 10 36 6C32 8 31 12 31 12C29 11 27 11 25 12C25 12 24 8 20 6C16 10 18 14 18 14C14 17 12 22 12 27C12 40 20 48 30 48C40 48 48 40 48 27C48 22 42 17 38 14Z" fill="white" opacity="0.9"/></svg>`,
+
+  music: `<svg viewBox="0 0 60 60" width="54" height="54"><defs><linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fc4494"/><stop offset="100%" stop-color="#c0392b"/></linearGradient></defs><rect width="60" height="60" rx="14" fill="url(#mg)"/><ellipse cx="22" cy="44" rx="9" ry="6" fill="white" opacity="0.9"/><ellipse cx="38" cy="41" rx="9" ry="6" fill="white" opacity="0.9"/><rect x="29" y="18" width="3.5" height="26" fill="white" opacity="0.9"/><rect x="45" y="14" width="3.5" height="27" fill="white" opacity="0.9"/><rect x="29" y="18" width="19" height="5" rx="2" fill="white" opacity="0.9"/></svg>`,
+};
+
+function getDockIcon(id) { return dockIconSvgs[id] || ''; }
 
 // ─── FINDER ──────────────────────────────────────────────────────────────────
 const finderFavs = [
@@ -829,6 +902,119 @@ const safariProjects = [
   { name:'AI SDLC Platform',   desc:'Development lifecycle automation with AI' },
 ];
 const safariSkills = ['Vue 3','React','TypeScript','Python','FastAPI','Django','AWS','Docker','VS Code Extensions'];
+
+// ─── MUSIC PLAYER ────────────────────────────────────────────────────────────
+const musicTracks = [
+  {
+    title: 'Priya Phool',
+    artist: 'Kobid Bazra ft. Sujan Chapagain',
+    album: 'Unko Sweater OST',
+    ytId: 'Jzyc5ynowtc',
+    art: 'linear-gradient(135deg, #e879a0 0%, #9b59b6 50%, #5c3d8f 100%)',
+    live: false,
+  },
+];
+
+const musicTrackIdx = ref(0);
+const musicIsPlaying = ref(false);
+const musicVolume = ref(75);
+const musicYtReady = ref(false);
+let ytPlayer = null;
+let ytApiLoaded = false;
+
+const currentMusicTrack = computed(() => musicTracks[musicTrackIdx.value]);
+
+function initYTPlayer() {
+  if (ytApiLoaded || window.YT?.Player) {
+    createYTPlayer();
+    return;
+  }
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  window.onYouTubeIframeAPIReady = () => { ytApiLoaded = true; createYTPlayer(); };
+  document.head.appendChild(tag);
+  ytApiLoaded = true;
+}
+
+function createYTPlayer() {
+  nextTick(() => {
+    const el = document.getElementById('yt-music-div');
+    if (!el || !window.YT?.Player) {
+      setTimeout(createYTPlayer, 300);
+      return;
+    }
+    if (ytPlayer) { ytPlayer.destroy(); ytPlayer = null; }
+    ytPlayer = new window.YT.Player('yt-music-div', {
+      height: '1', width: '1',
+      videoId: currentMusicTrack.value.ytId,
+      playerVars: { autoplay: 1, controls: 0, rel: 0, playsinline: 1, fs: 0, disablekb: 1 },
+      events: {
+        onReady: (e) => {
+          musicYtReady.value = true;
+          e.target.setVolume(parseInt(musicVolume.value));
+          e.target.playVideo();
+          nextTick(() => {
+            const s = document.querySelector('.music-vol-slider');
+            if (s) s.style.setProperty('--val', musicVolume.value + '%');
+          });
+        },
+        onStateChange: (e) => {
+          musicIsPlaying.value = e.data === 1;
+        },
+      },
+    });
+  });
+}
+
+function toggleMusicPlay() {
+  if (!ytPlayer || !musicYtReady.value) return;
+  musicIsPlaying.value ? ytPlayer.pauseVideo() : ytPlayer.playVideo();
+}
+
+function nextMusicTrack() {
+  musicTrackIdx.value = (musicTrackIdx.value + 1) % musicTracks.length;
+  if (ytPlayer && musicYtReady.value) {
+    ytPlayer.loadVideoById(currentMusicTrack.value.ytId);
+    if (musicIsPlaying.value) ytPlayer.playVideo();
+  }
+}
+
+function prevMusicTrack() {
+  musicTrackIdx.value = (musicTrackIdx.value - 1 + musicTracks.length) % musicTracks.length;
+  if (ytPlayer && musicYtReady.value) {
+    ytPlayer.loadVideoById(currentMusicTrack.value.ytId);
+    if (musicIsPlaying.value) ytPlayer.playVideo();
+  }
+}
+
+function setMusicVolume() {
+  if (ytPlayer && musicYtReady.value) ytPlayer.setVolume(parseInt(musicVolume.value));
+  const slider = document.querySelector('.music-vol-slider');
+  if (slider) slider.style.setProperty('--val', musicVolume.value + '%');
+}
+
+function playMusicTrack(idx) {
+  musicTrackIdx.value = idx;
+  if (ytPlayer && musicYtReady.value) {
+    ytPlayer.loadVideoById(currentMusicTrack.value.ytId);
+    ytPlayer.playVideo();
+    musicIsPlaying.value = true;
+  }
+}
+
+watch(openWindows, (wins) => {
+  const mwin = wins.find(w => w.app === 'music');
+  if (mwin && !ytPlayer) {
+    nextTick(() => initYTPlayer());
+  }
+  if (!mwin && ytPlayer) {
+    ytPlayer.stopVideo();
+    musicIsPlaying.value = false;
+    ytPlayer.destroy();
+    ytPlayer = null;
+    musicYtReady.value = false;
+  }
+}, { deep: false });
 </script>
 
 <style scoped>
@@ -837,7 +1023,7 @@ const safariSkills = ['Vue 3','React','TypeScript','Python','FastAPI','Django','
   position: fixed;
   inset: 0;
   z-index: 100;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", sans-serif;
   user-select: none;
 }
 
@@ -845,17 +1031,28 @@ const safariSkills = ['Vue 3','React','TypeScript','Python','FastAPI','Django','
 .boot-screen {
   position: absolute;
   inset: 0;
-  background: #000;
+  background: #000000;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 48px;
+  gap: 52px;
 }
 .boot-logo { display: flex; align-items: center; justify-content: center; }
-.boot-bar-wrap { width: 200px; }
-.boot-bar-track { width: 100%; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; }
-.boot-bar-fill { height: 100%; background: white; border-radius: 2px; transition: width 0.05s linear; }
+.boot-bar-wrap { width: 180px; }
+.boot-bar-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.boot-bar-fill {
+  height: 100%;
+  background: rgba(255,255,255,0.85);
+  border-radius: 3px;
+  transition: width 0.05s linear;
+}
 
 /* ── LOGIN ── */
 .login-screen {
@@ -866,43 +1063,95 @@ const safariSkills = ['Vue 3','React','TypeScript','Python','FastAPI','Django','
   align-items: center;
   justify-content: center;
   gap: 16px;
-  background: radial-gradient(ellipse at 40% 30%, #2d1b69 0%, #0f0c29 50%, #000 100%);
+  background:
+    radial-gradient(ellipse 120% 80% at 20% 110%, rgba(255,140,50,0.55) 0%, transparent 55%),
+    radial-gradient(ellipse 80% 60% at 80% 110%, rgba(255,100,30,0.35) 0%, transparent 50%),
+    linear-gradient(175deg, #0a1628 0%, #0e2040 30%, #1a1060 60%, #0a0820 100%);
+  backdrop-filter: none;
 }
-.login-time { font-size: 88px; font-weight: 200; color: white; line-height: 1; letter-spacing: -3px; }
-.login-date { font-size: 20px; color: rgba(255,255,255,0.8); font-weight: 300; margin-bottom: 32px; }
-.login-card { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.login-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(0px);
+  background: rgba(0,0,0,0.18);
+}
+.login-time {
+  position: relative;
+  font-size: 96px;
+  font-weight: 200;
+  color: white;
+  line-height: 1;
+  letter-spacing: -4px;
+  text-shadow: 0 2px 40px rgba(0,0,0,0.4);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+}
+.login-date {
+  position: relative;
+  font-size: 17px;
+  color: rgba(255,255,255,0.92);
+  font-weight: 500;
+  margin-bottom: 40px;
+  letter-spacing: 0.01em;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+}
+.login-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  animation: card-rise 0.7s cubic-bezier(0.34,1.4,0.64,1) both;
+}
+@keyframes card-rise {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
 .login-avatar {
-  width: 72px; height: 72px; border-radius: 50%;
-  background: linear-gradient(135deg, #4c6ef5, #7c3aed);
+  width: 76px; height: 76px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5e9bff 0%, #3468d8 100%);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 0 3px rgba(255,255,255,0.18);
   display: flex; align-items: center; justify-content: center;
-  font-size: 28px; font-weight: 600; color: white;
-  box-shadow: 0 0 0 3px rgba(255,255,255,0.2);
+  font-size: 30px; font-weight: 600; color: white;
 }
-.login-name { color: white; font-size: 17px; font-weight: 400; }
+.login-name {
+  color: rgba(255,255,255,0.95);
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
 .login-pw-row { display: flex; align-items: center; gap: 8px; }
 .login-pw-input {
   background: rgba(255,255,255,0.15);
-  border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 8px;
-  padding: 8px 14px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 22px;
+  padding: 9px 18px;
   color: white;
   font-size: 14px;
-  width: 180px;
+  width: 192px;
   outline: none;
-  backdrop-filter: blur(10px);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  backdrop-filter: blur(12px);
+  transition: background 0.2s, border-color 0.2s;
 }
-.login-pw-input::placeholder { color: rgba(255,255,255,0.5); }
+.login-pw-input:focus {
+  background: rgba(255,255,255,0.22);
+  border-color: rgba(255,255,255,0.5);
+}
+.login-pw-input::placeholder { color: rgba(255,255,255,0.4); }
 .login-arrow {
-  width: 32px; height: 32px;
-  background: rgba(255,255,255,0.2);
-  border: 1px solid rgba(255,255,255,0.3);
+  width: 34px; height: 34px;
+  background: rgba(255,255,255,0.9);
+  border: none;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.15s, transform 0.15s;
 }
-.login-arrow:hover { background: rgba(255,255,255,0.35); }
-.login-hint { font-size: 12px; color: rgba(255,255,255,0.4); }
+.login-arrow:hover { background: white; transform: scale(1.08); }
+.login-arrow svg { stroke: #1a1a2e; }
+.login-hint { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; }
 
 /* ── DESKTOP ── */
 .desktop {
@@ -914,11 +1163,10 @@ const safariSkills = ['Vue 3','React','TypeScript','Python','FastAPI','Django','
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 20% 20%, rgba(124,58,237,0.6) 0%, transparent 45%),
-    radial-gradient(ellipse at 80% 10%, rgba(76,110,245,0.5) 0%, transparent 40%),
-    radial-gradient(ellipse at 60% 80%, rgba(16,185,129,0.3) 0%, transparent 50%),
-    radial-gradient(ellipse at 10% 90%, rgba(245,158,11,0.3) 0%, transparent 45%),
-    linear-gradient(160deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    radial-gradient(ellipse 160% 100% at 15% 115%, rgba(255,155,60,0.75) 0%, rgba(255,100,30,0.4) 28%, transparent 52%),
+    radial-gradient(ellipse 90% 70% at 78% 115%, rgba(255,120,40,0.45) 0%, transparent 45%),
+    radial-gradient(ellipse 120% 80% at 50% -10%, rgba(80,120,220,0.35) 0%, transparent 50%),
+    linear-gradient(185deg, #090d1a 0%, #0d1830 18%, #12255c 40%, #1a1050 60%, #251030 78%, #180818 100%);
 }
 
 /* ── MENU BAR ── */
@@ -926,61 +1174,79 @@ const safariSkills = ['Vue 3','React','TypeScript','Python','FastAPI','Django','
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 28px;
-  background: rgba(20,20,30,0.82);
-  backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(20px) saturate(200%);
+  -webkit-backdrop-filter: blur(20px) saturate(200%);
+  border-bottom: none;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.12);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px;
+  padding: 0 8px;
   z-index: 200;
 }
-.menubar-left { display: flex; align-items: center; gap: 2px; }
-.menubar-right { display: flex; align-items: center; gap: 10px; }
+.menubar-left { display: flex; align-items: center; gap: 0; }
+.menubar-right { display: flex; align-items: center; gap: 8px; }
 .mb-item {
   position: relative;
-  padding: 0 8px;
+  padding: 0 9px;
   height: 22px;
   display: flex;
   align-items: center;
-  border-radius: 4px;
-  color: white;
+  border-radius: 5px;
+  color: rgba(0,0,0,0.85);
   font-size: 13px;
+  font-weight: 400;
   cursor: default;
   white-space: nowrap;
   gap: 4px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
-.mb-item:hover { background: rgba(255,255,255,0.12); }
-.apple-btn { padding: 0 10px; font-size: 15px; }
+.mb-item:hover { background: rgba(0,0,0,0.08); }
+.apple-btn { padding: 0 10px; }
 .app-name { font-weight: 600; font-size: 13px; }
-.mb-status { color: rgba(255,255,255,0.85); font-size: 12px; display: flex; align-items: center; gap: 5px; }
+.mb-status {
+  color: rgba(0,0,0,0.75);
+  font-size: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  -webkit-font-smoothing: antialiased;
+}
 .mb-dropdown {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 3px);
   left: 0;
-  min-width: 200px;
-  background: rgba(30,30,42,0.95);
-  backdrop-filter: blur(40px);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 6px;
-  padding: 4px 0;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  min-width: 210px;
+  background: rgba(246,246,246,0.92);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 8px;
+  padding: 5px 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 6px rgba(0,0,0,0.1);
   z-index: 300;
-  margin-top: 2px;
 }
 .mb-drop-item {
-  padding: 4px 16px;
+  padding: 5px 16px;
   font-size: 13px;
-  color: rgba(255,255,255,0.85);
+  color: rgba(0,0,0,0.85);
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: default;
+  border-radius: 4px;
+  margin: 0 4px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
-.mb-drop-item:hover { background: #4c6ef5; color: white; }
+.mb-drop-item:hover { background: #0066cc; color: white; }
+.mb-drop-item:hover .mb-shortcut { color: rgba(255,255,255,0.7); }
 .mb-drop-item.bold { font-weight: 600; }
-.mb-drop-sep { height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0; }
-.mb-shortcut { color: rgba(255,255,255,0.4); font-size: 12px; }
+.mb-drop-sep { height: 1px; background: rgba(0,0,0,0.1); margin: 4px 0; }
+.mb-shortcut { color: rgba(0,0,0,0.35); font-size: 12px; }
 
 /* ── DESKTOP ICONS ── */
 .dsk-icon {
@@ -988,86 +1254,124 @@ const safariSkills = ['Vue 3','React','TypeScript','Python','FastAPI','Django','
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
   cursor: default;
-  width: 72px;
+  width: 76px;
+  transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1);
 }
-.dsk-icon:hover .dsk-icon-label { color: white; }
+.dsk-icon:hover { transform: scale(1.06); }
 .dsk-icon-img { display: flex; align-items: center; justify-content: center; }
 .dsk-icon-label {
-  color: rgba(255,255,255,0.85);
+  color: white;
   font-size: 11px;
+  font-weight: 500;
   text-align: center;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.7), 0 0 8px rgba(0,0,0,0.5);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  letter-spacing: 0;
   white-space: nowrap;
+  -webkit-font-smoothing: antialiased;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.dsk-icon:hover .dsk-icon-label {
+  background: rgba(0,81,211,0.75);
 }
 
 /* ── CONTEXT MENU ── */
 .ctx-menu {
   position: absolute;
-  min-width: 180px;
-  background: rgba(30,30,42,0.96);
-  backdrop-filter: blur(40px);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px;
-  padding: 4px 0;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  min-width: 192px;
+  background: rgba(246,246,246,0.92);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 10px;
+  padding: 5px 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22), 0 2px 6px rgba(0,0,0,0.1);
   z-index: 500;
 }
-.ctx-item { padding: 5px 16px; font-size: 13px; color: rgba(255,255,255,0.85); cursor: default; }
-.ctx-item:hover { background: #4c6ef5; color: white; }
-.ctx-sep { height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0; }
+.ctx-item {
+  padding: 6px 16px;
+  font-size: 13px;
+  color: rgba(0,0,0,0.85);
+  cursor: default;
+  border-radius: 4px;
+  margin: 0 4px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.ctx-item:hover { background: #0066cc; color: white; }
+.ctx-sep { height: 1px; background: rgba(0,0,0,0.1); margin: 4px 0; }
 
 /* ── MAC WINDOW ── */
 .mac-window {
   position: absolute;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 25px 80px rgba(0,0,0,0.6), 0 0 0 0.5px rgba(255,255,255,0.08);
+  border: none;
+  background: #f6f6f6;
+  box-shadow:
+    0 22px 70px rgba(0,0,0,0.5),
+    0 4px 12px rgba(0,0,0,0.25),
+    0 0 0 0.5px rgba(0,0,0,0.18);
   display: flex;
   flex-direction: column;
-  background: #1e1e2e;
 }
 .win-titlebar {
-  height: 40px;
-  background: linear-gradient(180deg, #2a2a3e 0%, #252535 100%);
+  height: 52px;
+  background: rgba(246,246,246,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
   padding: 0 14px;
   flex-shrink: 0;
-  border-bottom: 1px solid rgba(0,0,0,0.3);
   cursor: grab;
+  position: relative;
 }
 .win-titlebar:active { cursor: grabbing; }
-.traffic-lights { display: flex; gap: 7px; }
+.traffic-lights { display: flex; gap: 8px; }
 .tl {
-  width: 12px; height: 12px; border-radius: 50%; cursor: pointer;
-  transition: filter 0.15s;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.12s;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center; justify-content: center;
 }
-.tl:hover { filter: brightness(1.3); }
-.tl.red    { background: #ff5f57; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.15); }
-.tl.yellow { background: #febc2e; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.15); }
-.tl.green  { background: #28c840; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.15); }
+.tl.red    { background: #FF5F57; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.18); }
+.tl.yellow { background: #FFBD2E; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.18); }
+.tl.green  { background: #28CA41; box-shadow: 0 0 0 0.5px rgba(0,0,0,0.18); }
+.tl:hover  { filter: brightness(0.88); }
 .win-title {
-  flex: 1;
+  position: absolute;
+  left: 0; right: 0;
   text-align: center;
   font-size: 13px;
-  color: rgba(255,255,255,0.6);
+  color: rgba(0,0,0,0.7);
   font-weight: 500;
+  letter-spacing: -0.01em;
   pointer-events: none;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 0 80px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
-.win-body { flex: 1; overflow: hidden; display: flex; }
+.win-body { flex: 1; overflow: hidden; display: flex; background: #ffffff; }
 
 /* ── FINDER ── */
-.finder-layout { display: flex; width: 100%; height: 100%; }
+.finder-layout { display: flex; width: 100%; height: 100%; background: #ffffff; }
 .finder-sidebar {
   width: 180px;
-  background: rgba(255,255,255,0.04);
-  border-right: 1px solid rgba(255,255,255,0.07);
+  background: rgba(246,246,246,0.95);
+  border-right: 1px solid rgba(0,0,0,0.1);
   padding: 8px 0;
   flex-shrink: 0;
   overflow-y: auto;
@@ -1075,69 +1379,85 @@ const safariSkills = ['Vue 3','React','TypeScript','Python','FastAPI','Django','
 .finder-section-label {
   font-size: 11px;
   font-weight: 600;
-  color: rgba(255,255,255,0.3);
-  padding: 6px 16px 2px;
+  color: rgba(0,0,0,0.4);
+  padding: 8px 16px 3px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 .finder-fav-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 5px 14px;
+  padding: 5px 12px;
   font-size: 13px;
-  color: rgba(255,255,255,0.75);
+  color: rgba(0,0,0,0.75);
   cursor: default;
-  border-radius: 6px;
-  margin: 0 4px;
+  border-radius: 7px;
+  margin: 0 5px;
   transition: background 0.1s;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
-.finder-fav-item:hover { background: rgba(255,255,255,0.06); }
-.finder-fav-item.active { background: rgba(76,110,245,0.3); color: #7dd3fc; }
+.finder-fav-item:hover { background: rgba(0,0,0,0.06); }
+.finder-fav-item.active { background: #0066cc; color: white; }
 .fav-icon { font-size: 14px; }
 .finder-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 .finder-toolbar {
-  height: 38px;
-  background: rgba(255,255,255,0.03);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  height: 40px;
+  background: rgba(248,248,248,0.95);
+  border-bottom: 1px solid rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
   padding: 0 12px;
   gap: 10px;
   flex-shrink: 0;
 }
-.finder-toolbar-btns { display: flex; gap: 2px; }
+.finder-toolbar-btns { display: flex; gap: 4px; }
 .finder-tb-btn {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.06);
+  border: none;
   border-radius: 5px;
-  width: 24px; height: 22px;
-  color: rgba(255,255,255,0.7);
-  font-size: 14px;
+  width: 26px; height: 22px;
+  color: rgba(0,0,0,0.55);
+  font-size: 15px;
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
+  transition: background 0.1s;
 }
-.finder-path-label { flex: 1; font-size: 13px; color: rgba(255,255,255,0.6); font-weight: 500; }
+.finder-tb-btn:hover { background: rgba(0,0,0,0.12); }
+.finder-path-label {
+  flex: 1;
+  font-size: 13px;
+  color: rgba(0,0,0,0.75);
+  font-weight: 500;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
 .finder-view-toggle { display: flex; gap: 2px; }
 .fvt-btn {
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 4px;
-  width: 26px; height: 22px;
-  color: rgba(255,255,255,0.5);
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 5px;
+  width: 28px; height: 22px;
+  color: rgba(0,0,0,0.5);
   cursor: pointer;
   font-size: 12px;
+  transition: background 0.1s;
 }
-.fvt-btn.active { background: rgba(76,110,245,0.3); color: #7dd3fc; }
+.fvt-btn.active { background: #0066cc; color: white; border-color: #0066cc; }
 .finder-file-header {
   display: grid;
   grid-template-columns: 1fr 130px 80px 100px;
   padding: 4px 16px;
   font-size: 11px;
-  color: rgba(255,255,255,0.3);
+  color: rgba(0,0,0,0.4);
   font-weight: 500;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
   flex-shrink: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 .finder-files-list { flex: 1; overflow-y: auto; padding: 4px 0; }
 .finder-file-row {
@@ -1145,15 +1465,20 @@ const safariSkills = ['Vue 3','React','TypeScript','Python','FastAPI','Django','
   grid-template-columns: 1fr 130px 80px 100px;
   padding: 5px 16px;
   font-size: 13px;
-  color: rgba(255,255,255,0.75);
+  color: rgba(0,0,0,0.85);
   cursor: default;
-  transition: background 0.1s;
+  transition: background 0.08s;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
-.finder-file-row:hover { background: rgba(255,255,255,0.05); }
-.finder-file-row.selected { background: rgba(76,110,245,0.25); color: #bdd5ff; }
+.finder-file-row:hover { background: rgba(0,0,0,0.05); }
+.finder-file-row.selected { background: #0066cc; color: white; }
+.finder-file-row.selected .ff-date,
+.finder-file-row.selected .ff-size,
+.finder-file-row.selected .ff-kind { color: rgba(255,255,255,0.75); }
 .ff-name { display: flex; align-items: center; gap: 8px; }
 .ff-icon { font-size: 15px; }
-.ff-date, .ff-size, .ff-kind { color: rgba(255,255,255,0.4); font-size: 12px; display: flex; align-items: center; }
+.ff-date, .ff-size, .ff-kind { color: rgba(0,0,0,0.45); font-size: 12px; display: flex; align-items: center; }
 
 /* ── TERMINAL ── */
 .terminal-layout {
@@ -1355,33 +1680,56 @@ const safariSkills = ['Vue 3','React','TypeScript','Python','FastAPI','Django','
 }
 
 /* ── ABOUT THIS MAC ── */
-.about-layout { display: flex; width: 100%; height: 100%; background: #f0f0f5; align-items: center; justify-content: center; gap: 40px; padding: 24px; }
+.about-layout {
+  display: flex; width: 100%; height: 100%;
+  background: rgba(246,246,246,0.98);
+  align-items: center; justify-content: center;
+  gap: 36px; padding: 28px;
+}
 .about-left { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.about-model { font-size: 14px; font-weight: 600; color: #1a1a2e; }
-.about-submodel { font-size: 12px; color: #666; }
-.about-right { display: flex; flex-direction: column; gap: 10px; }
-.about-title { font-size: 18px; font-weight: 600; color: #1a1a2e; margin-bottom: 4px; }
-.about-spec-row { display: flex; gap: 16px; font-size: 13px; }
-.about-spec-k { color: #666; min-width: 90px; }
-.about-spec-v { color: #1a1a2e; font-weight: 500; }
+.about-model {
+  font-size: 15px; font-weight: 600; color: rgba(0,0,0,0.85);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.about-submodel {
+  font-size: 12px; color: rgba(0,0,0,0.45);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.about-right { display: flex; flex-direction: column; gap: 9px; }
+.about-title {
+  font-size: 19px; font-weight: 600; color: rgba(0,0,0,0.85); margin-bottom: 5px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.about-spec-row {
+  display: flex; gap: 16px; font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.about-spec-k { color: rgba(0,0,0,0.45); min-width: 90px; }
+.about-spec-v { color: rgba(0,0,0,0.85); font-weight: 500; }
 .about-more-btn {
-  margin-top: 8px;
+  margin-top: 10px;
   padding: 7px 18px;
-  background: linear-gradient(180deg, #fff 0%, #f0f0f5 100%);
-  border: 1px solid #ccc;
-  border-radius: 7px;
+  background: rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 8px;
   font-size: 13px;
   cursor: pointer;
-  color: #1a1a2e;
+  color: rgba(0,0,0,0.8);
   align-self: flex-start;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.15s;
 }
-.about-more-btn:hover { background: linear-gradient(180deg, #f0f0f5 0%, #e8e8f0 100%); }
+.about-more-btn:hover { background: rgba(0,0,0,0.1); }
 
 /* ── DOCK ── */
 .dock-outer {
   position: absolute;
-  bottom: 8px;
+  bottom: 6px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 150;
@@ -1389,52 +1737,326 @@ const safariSkills = ['Vue 3','React','TypeScript','Python','FastAPI','Django','
 .dock-inner {
   display: flex;
   align-items: flex-end;
-  gap: 6px;
-  padding: 8px 14px;
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 18px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+  gap: 5px;
+  padding: 8px 12px 10px;
+  background: rgba(255,255,255,0.22);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 20px;
+  box-shadow:
+    0 8px 40px rgba(0,0,0,0.35),
+    0 2px 8px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.5);
 }
 .dock-item { position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
 .dock-icon-wrap { position: relative; display: flex; flex-direction: column; align-items: center; }
 .dock-icon-bg {
-  width: 52px; height: 52px;
+  width: 54px; height: 54px;
   border-radius: 13px;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  overflow: hidden;
+  overflow: visible;
+  transition: border-radius 0.15s;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
 }
-.dock-emoji { font-size: 26px; line-height: 1; }
-.dock-label-icon { font-size: 18px; color: white; font-weight: 700; font-family: monospace; }
+.dock-item:hover .dock-icon-bg {
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.55));
+}
 .dock-dot {
-  width: 4px; height: 4px;
-  background: rgba(255,255,255,0.8);
+  width: 5px; height: 5px;
+  background: rgba(255,255,255,0.85);
   border-radius: 50%;
-  margin-top: 3px;
+  margin-top: 4px;
+  box-shadow: 0 0 4px rgba(255,255,255,0.5);
 }
 .dock-tooltip {
   position: absolute;
-  bottom: calc(100% + 12px);
+  bottom: calc(100% + 14px);
   left: 50%;
-  transform: translateX(-50%);
-  background: rgba(20,20,30,0.9);
-  backdrop-filter: blur(10px);
+  transform: translateX(-50%) translateY(4px);
+  background: rgba(40,40,40,0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 6px;
-  padding: 4px 10px;
+  border-radius: 7px;
+  padding: 5px 11px;
   font-size: 12px;
+  font-weight: 500;
   color: white;
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.15s;
+  transition: opacity 0.15s, transform 0.15s;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
-.dock-item:hover .dock-tooltip { opacity: 1; }
-.dock-divider { width: 1px; height: 52px; background: rgba(255,255,255,0.2); margin: 0 4px; }
+.dock-item:hover .dock-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.dock-divider { width: 1px; height: 46px; background: rgba(255,255,255,0.25); margin: 0 2px; align-self: center; }
+
+/* ── MUSIC PLAYER ── */
+.music-layout {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background: #0c0c0e;
+  color: white;
+  overflow: hidden;
+}
+
+/* Blurred color wash background */
+.music-bg-wash {
+  position: absolute;
+  inset: -40px;
+  opacity: 0.18;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+  transition: opacity 0.5s;
+}
+
+/* Left vinyl side */
+.music-vinyl-side {
+  position: relative;
+  z-index: 1;
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+/* Album art */
+.music-art-wrap {
+  position: relative;
+  width: 210px;
+  height: 210px;
+  flex-shrink: 0;
+}
+.music-art {
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.7);
+  transition: box-shadow 0.5s;
+}
+.music-art-spin {
+  animation: vinyl-spin 10s linear infinite;
+  box-shadow: 0 16px 60px rgba(0,0,0,0.75), 0 0 60px rgba(232,121,160,0.3);
+}
+@keyframes vinyl-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.music-vinyl-ring {
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.07);
+}
+.music-vinyl-center {
+  position: absolute;
+  inset: 38%;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(255,255,255,0.09);
+}
+.music-vinyl-hole {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: #0c0c0e;
+  box-shadow: 0 0 0 1.5px rgba(255,255,255,0.1);
+}
+.music-art-shadow {
+  position: absolute;
+  bottom: -18px;
+  left: 8%;
+  width: 84%;
+  height: 36px;
+  border-radius: 50%;
+  filter: blur(18px);
+  opacity: 0.6;
+  transform: scaleY(0.3);
+}
+
+/* Right info side */
+.music-info-side {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px 40px 40px 20px;
+  gap: 22px;
+}
+
+/* Equalizer */
+.music-eq {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 22px;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.music-eq-active { opacity: 1; }
+.music-eq-bar {
+  width: 3px;
+  background: linear-gradient(to top, #e879a0, #c084fc);
+  border-radius: 2px;
+  height: 4px;
+  animation: none;
+}
+.music-eq-active .music-eq-bar {
+  animation: eq-bounce 0.5s ease-in-out infinite alternate;
+}
+@keyframes eq-bounce {
+  from { height: 3px; }
+  to   { height: 20px; }
+}
+
+/* Meta */
+.music-meta { display: flex; flex-direction: column; gap: 4px; }
+.music-track-name {
+  font-size: 26px;
+  font-weight: 700;
+  color: white;
+  line-height: 1.15;
+  letter-spacing: -0.3px;
+}
+.music-track-artist {
+  font-size: 14px;
+  color: rgba(255,255,255,0.55);
+  font-weight: 400;
+}
+.music-track-album {
+  font-size: 12px;
+  color: rgba(232,121,160,0.75);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+/* Controls */
+.music-controls { display: flex; align-items: center; }
+.mc-play {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e879a0, #9b59b6);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 28px rgba(232,121,160,0.5);
+  transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.15s;
+}
+.mc-play:hover { transform: scale(1.1); box-shadow: 0 8px 36px rgba(232,121,160,0.65); }
+.mc-play.loading { opacity: 0.55; cursor: default; transform: none; }
+
+/* Loading */
+.music-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255,255,255,0.3);
+  font-size: 12px;
+}
+.music-spin-ring {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(232,121,160,0.2);
+  border-top-color: #e879a0;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Volume */
+.music-vol-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 260px;
+}
+.music-vol-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(to right, rgba(232,121,160,0.85) 0%, rgba(232,121,160,0.85) var(--val, 75%), rgba(255,255,255,0.1) var(--val, 75%));
+  outline: none;
+  cursor: pointer;
+}
+.music-vol-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.5);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.music-vol-slider::-webkit-slider-thumb:hover { transform: scale(1.3); }
+
+/* ── TRAFFIC LIGHT SYMBOLS ── */
+.tl-sym {
+  font-size: 7px;
+  font-weight: 900;
+  color: rgba(0,0,0,0);
+  line-height: 1;
+  transition: color 0.1s;
+  pointer-events: none;
+  user-select: none;
+}
+.traffic-lights:hover .tl.red .tl-sym { color: rgba(140,30,20,0.7); }
+.traffic-lights:hover .tl.yellow .tl-sym { color: rgba(100,70,0,0.6); }
+.traffic-lights:hover .tl.green .tl-sym { color: rgba(0,80,20,0.6); }
+
+/* ── WINDOW TRANSITIONS ── */
+.win-enter-active {
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
+}
+.win-enter-from {
+  opacity: 0;
+  transform: scale(0.82) translateY(8px);
+}
+.win-leave-active {
+  transition: opacity 0.16s ease, transform 0.16s ease;
+  pointer-events: none;
+}
+.win-leave-to {
+  opacity: 0;
+  transform: scale(0.94);
+}
+
+/* ── CONTEXT MENU ANIMATION ── */
+.ctx-menu {
+  animation: ctx-pop 0.14s cubic-bezier(0.34,1.56,0.64,1);
+  transform-origin: top left;
+}
+@keyframes ctx-pop {
+  from { opacity: 0; transform: scale(0.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── BOOT LOGO ── */
+.boot-logo svg {
+  filter: none;
+}
 
 /* ── TRANSITIONS ── */
 .boot-fade-leave-active { transition: opacity 0.5s ease; }
@@ -1446,8 +2068,8 @@ const safariSkills = ['Vue 3','React','TypeScript','Python','FastAPI','Django','
 .desktop-fade-enter-active { transition: opacity 0.8s ease; }
 .desktop-fade-enter-from { opacity: 0; }
 
-.logo-pop-enter-active { transition: opacity 0.8s ease, transform 0.8s ease; }
-.logo-pop-enter-from { opacity: 0; transform: scale(0.85); }
+.logo-pop-enter-active { transition: opacity 0.8s ease, transform 0.9s cubic-bezier(0.34,1.56,0.64,1); }
+.logo-pop-enter-from { opacity: 0; transform: scale(0.72); }
 .bar-slide-enter-active { transition: opacity 0.5s ease; }
 .bar-slide-enter-from { opacity: 0; }
 
