@@ -38,5 +38,23 @@ npm run build
 ```
 
 
-## the end
+## Deploy to Cloudflare Workers
+
+The Worker serves the Vite build in `dist` as static assets, with an
+`index.html` fallback for single-page app navigation.
+
+Use these settings in Cloudflare Workers Builds:
+
+- Build command: `npm run build`
+- Deploy command: `npx wrangler deploy`
+
+To build and deploy locally, run `npm run deploy`. To preview the built site
+with Workers locally, run `npm run workers:dev`.
+
+To validate the deployment configuration without publishing:
+
+```sh
+npm run build
+npx wrangler deploy --dry-run
+```
 
