@@ -1,0 +1,23 @@
+package.json
+  s_35606f5d2891f5::t_d78e2fefb47cdb 13-14
+wrangler.jsonc
+  s_35606f5d2891f5::t_d78e2fefb47cdb 4-7
+README.md
+  s_35606f5d2891f5::t_d78e2fefb47cdb 41-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.12",
+  "base_commit_sha": "52d50de9bb8d5129e4be0eb2dc99e3d78d96e236",
+  "prompts": {},
+  "sessions": {
+    "s_35606f5d2891f5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0b03c-0c1d-7b91-a91f-9ad05260dcc4",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Ankit Chhetri <ankitchettri098@gmail.com>"
+    }
+  }
+}
