@@ -1,216 +1,36 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-
-const player = ref({ x: 51, y: 68 })
-const stamina = ref(100)
-const wallet = ref(0)
-const mission = ref(0)
-const inventoryOpen = ref(false)
-const journalOpen = ref(false)
-const dialogue = ref({ name: 'Ama Doma', text: 'The mountains remember every footstep. Come, I will show you home.', button: 'BEGIN JOURNEY' })
-const toast = ref('')
-const gift = ref(null)
-const snow = Array.from({ length: 42 }, (_, i) => ({ x: (i * 37) % 100, y: (i * 71) % 100, d: 4 + (i % 7), s: 2 + (i % 4) }))
-const keys = new Set()
-let frame
-let last = performance.now()
-
-const missions = [
-  { title: 'Welcome Home', text: 'Walk to the village well and meet Pema.', reward: 0, target: { x: 47, y: 58 }, action: 'Speak with Pema' },
-  { title: 'The Wandering Yaks', text: 'Help Norbu herd the three wandering yaks home.', reward: 150, target: { x: 23, y: 70 }, action: 'Herd the yaks' },
-  { title: 'Firewood Before the Storm', text: 'Chop and carry firewood down from the pine trail.', reward: 200, target: { x: 78, y: 59 }, action: 'Chop the marked logs' },
-  { title: 'Medicine for the Hermit', text: 'Climb to Ho Tso and deliver the hermit’s medicine.', reward: 180, target: { x: 71, y: 25 }, action: 'Deliver medicine' },
-  { title: 'Lanterns for the Festival', text: 'String the lanterns before twilight settles in.', reward: 250, target: { x: 51, y: 66 }, action: 'Hang the lanterns' },
-  { title: 'Catch the Market Thief', text: 'A monkey stole Karma’s wares. Catch the rascal!', reward: 220, target: { x: 64, y: 70 }, action: 'Recover the stolen goods' },
-  { title: 'The Proposal', text: 'Choose a gift in the market, then meet Pema at Ho Tso.', reward: 0, target: { x: 71, y: 25 }, action: 'Meet Pema at the lake' },
+import { createWorld } from './composables/useHimalayanWorld'
+const canvas=ref(),world=ref(),started=ref(false),mission=ref(0),wallet=ref(0),stamina=ref(100),near=ref(false),satchel=ref(false),journal=ref(false),gift=ref(null),dialogue=ref(null),toast=ref('')
+const missions=[
+ {title:'Welcome Home',objective:'Meet Pema beside the chautara',reward:0,pos:[-3,8],npc:'Pema',line:'You came back. The mountains did not change—but perhaps you did.'},
+ {title:'The Wandering Yaks',objective:'Help Norbu bring the yaks home',reward:150,pos:[-31,12],npc:'Norbu',line:'Good footwork! Better than the day they ate my scarf.'},
+ {title:'Firewood Before the Storm',objective:'Gather cedar wood in the eastern forest',reward:200,pos:[37,9],npc:'Ama Doma',line:'Tonight every hearth will burn because of you.'},
+ {title:'Medicine for the Hermit',objective:'Climb to Ho Tso with the medicine',reward:180,pos:[43,-34],npc:'The Hermit',line:'A kind heart makes even this steep road light.'},
+ {title:'Lanterns for the Festival',objective:'Hang lanterns through the village',reward:250,pos:[8,2],npc:'Tashi',line:'Look—our little village has borrowed the stars.'},
+ {title:'Catch the Market Thief',objective:'Chase the monkey through Market Street',reward:220,pos:[19,12],npc:'Karma',line:'Fast feet. Honest hands. Perhaps I misjudged you.'},
+ {title:'The Proposal',objective:'Choose a gift, then meet Pema at Ho Tso',reward:0,pos:[34,-36],npc:'Pema',line:''}
 ]
-
-const currentMission = computed(() => missions[Math.min(mission.value, 6)])
-const distance = computed(() => Math.hypot(player.value.x - currentMission.value.target.x, player.value.y - currentMission.value.target.y))
-const canInteract = computed(() => distance.value < 7 && !dialogue.value)
-const progress = computed(() => `${Math.min(mission.value + 1, 7)} / 7`)
-
-const bark = (message) => {
-  toast.value = message
-  window.clearTimeout(bark.timer)
-  bark.timer = window.setTimeout(() => (toast.value = ''), 3200)
-}
-
-function begin() {
-  dialogue.value = null
-  bark('NEW QUEST  •  Welcome Home')
-}
-
-function interact() {
-  if (dialogue.value) return
-  if (mission.value === 6) {
-    if (distance.value >= 7) return bark('Follow the golden marker to Ho Tso')
-    const lines = {
-      sweets: 'You remembered I have a sweet tooth. Of course I’ll say yes.',
-      momos: 'Out of everything, you bring me food? ...I love it. And yes.',
-      bangle: 'You shouldn’t have spent so much—but yes. A thousand times, yes.',
-      shawl: 'You chose this for me, not for show. Yes. Quietly, completely—yes.',
-      flowers: 'You didn’t need to buy anything at all. You came. That is enough. Yes.',
-      nothing: 'Empty-handed? Then promise me a lifetime of making it right.'
-    }
-    dialogue.value = { name: 'Pema', text: lines[gift.value?.id || 'nothing'], button: 'OUR STORY BEGINS', ending: true }
-    return
-  }
-  if (distance.value >= 7) return bark('Follow the golden marker')
-  const done = currentMission.value
-  wallet.value += done.reward
-  mission.value++
-  const speaker = ['Pema', 'Norbu', 'Ama Doma', 'The Hermit', 'Tashi', 'Karma'][mission.value - 1]
-  const lines = [
-    'You still walk like the boy who left. Welcome home.',
-    'Not bad for a boy who once let the yaks eat my scarf.',
-    'The storm can come now. The village will be warm.',
-    'A generous heart makes the steepest path light.',
-    'Every lantern is a small sun. Tonight, you gave us a sky full.',
-    'Fast feet, good heart. Take this—and don’t tell Pema I said so.'
-  ]
-  dialogue.value = { name: speaker, text: lines[mission.value - 1], button: mission.value === 6 ? 'CHOOSE A GIFT' : 'CONTINUE' }
-}
-
-function continueDialogue() {
-  if (dialogue.value?.ending) {
-    mission.value = 0; wallet.value = 0; gift.value = null; player.value = { x: 51, y: 68 }
-    dialogue.value = { name: 'Kanchan Gaon', text: 'Some stories end at the lake. The best ones begin there.', button: 'PLAY AGAIN' }
-    return
-  }
-  dialogue.value = null
-  bark(`NEW QUEST  •  ${currentMission.value.title}`)
-}
-
-const gifts = [
-  { id: 'momos', name: 'Pema’s favorite momos', shop: 'FOOD STALL', price: 80, icon: '♨' },
-  { id: 'sweets', name: 'A box of local sweets', shop: 'MITHAI SHOP', price: 150, icon: '✦' },
-  { id: 'shawl', name: 'Hand-woven shawl', shop: 'CRAFT STORE', price: 400, icon: '▰' },
-  { id: 'bangle', name: 'Silver moon bangle', shop: 'SUNAR', price: 700, icon: '◯' },
-  { id: 'flowers', name: 'Wild alpine flowers', shop: 'LAKE TRAIL', price: 0, icon: '❋' },
-]
-
-function buy(item) {
-  if (gift.value) return bark('You may carry only one gift')
-  if (wallet.value < item.price) return bark(`You need ₹${item.price - wallet.value} more`)
-  wallet.value -= item.price
-  gift.value = item
-  bark(`${item.name} added to your satchel`)
-}
-
-function loop(now) {
-  const dt = Math.min((now - last) / 16.67, 2); last = now
-  if (!dialogue.value && !inventoryOpen.value && !journalOpen.value) {
-    let dx = 0, dy = 0
-    if (keys.has('w') || keys.has('arrowup')) dy--
-    if (keys.has('s') || keys.has('arrowdown')) dy++
-    if (keys.has('a') || keys.has('arrowleft')) dx--
-    if (keys.has('d') || keys.has('arrowright')) dx++
-    const sprint = keys.has('shift') && stamina.value > 0
-    const speed = (sprint ? .34 : .19) * dt
-    if (dx || dy) {
-      const l = Math.hypot(dx, dy); dx /= l; dy /= l
-      player.value.x = Math.max(8, Math.min(92, player.value.x + dx * speed))
-      player.value.y = Math.max(14, Math.min(87, player.value.y + dy * speed))
-      stamina.value = Math.max(0, stamina.value - (sprint ? .5 : -.18) * dt)
-    } else stamina.value = Math.min(100, stamina.value + .35 * dt)
-  }
-  frame = requestAnimationFrame(loop)
-}
-
-function onKey(e) {
-  const k = e.key.toLowerCase()
-  if (['tab', ' '].includes(k)) e.preventDefault()
-  if (e.type === 'keydown') {
-    keys.add(k)
-    if (k === 'e') interact()
-    if (k === 'tab') inventoryOpen.value = !inventoryOpen.value
-    if (k === 'j') journalOpen.value = !journalOpen.value
-  } else keys.delete(k)
-}
-
-onMounted(() => { window.addEventListener('keydown', onKey); window.addEventListener('keyup', onKey); frame = requestAnimationFrame(loop) })
-onBeforeUnmount(() => { window.removeEventListener('keydown', onKey); window.removeEventListener('keyup', onKey); cancelAnimationFrame(frame) })
+const current=computed(()=>missions[Math.min(mission.value,6)])
+const gifts=[{id:'momos',name:'Favorite momos',price:80,icon:'♨'},{id:'sweets',name:'Local sweets',price:150,icon:'✦'},{id:'shawl',name:'Hand-woven shawl',price:400,icon:'▰'},{id:'bangle',name:'Silver bangle',price:700,icon:'◯'},{id:'flowers',name:'Alpine flowers',price:0,icon:'❋'}]
+function begin(){started.value=true;dialogue.value=null;setTimeout(()=>canvas.value?.click(),100)}
+function flash(s){toast.value=s;clearTimeout(flash.t);flash.t=setTimeout(()=>toast.value='',2800)}
+function interact(){if(!started.value||dialogue.value||satchel.value||journal.value)return;if(!near.value)return flash('Follow the golden trail marker');if(mission.value===6){const lines={momos:'Out of everything, you bring me food? I love it. And yes.',sweets:'You remembered my sweet tooth. Of course I say yes.',shawl:'You chose this with your heart. Yes—always yes.',bangle:'You should not have spent so much… but yes. A thousand times.',flowers:'You did not need to buy anything. You came. That is enough.',none:'Empty-handed? Then promise me a lifetime of making it right.'};dialogue.value={npc:'Pema',text:lines[gift.value?.id||'none'],end:true};return}const m=current.value;wallet.value+=m.reward;dialogue.value={npc:m.npc,text:m.line};mission.value++;setTimeout(()=>world.value?.setTarget(...current.value.pos),0)}
+function closeDialogue(){const ended=dialogue.value?.end;if(ended){started.value=false;mission.value=0;wallet.value=0;gift.value=null;world.value?.setTarget(...missions[0].pos)}dialogue.value=null;flash(ended?'A new story begins':'Quest updated')}
+function buy(g){if(gift.value)return flash('Choose only one gift');if(wallet.value<g.price)return flash(`You need ₹${g.price-wallet.value} more`);wallet.value-=g.price;gift.value=g;flash(`${g.name} placed in your satchel`)}
+function key(e){if(e.repeat)return;if(e.key.toLowerCase()==='e')interact();if(e.key==='Tab'){e.preventDefault();satchel.value=!satchel.value}if(e.key.toLowerCase()==='j')journal.value=!journal.value}
+onMounted(()=>{world.value=createWorld(canvas.value,s=>{stamina.value=s.stamina;near.value=s.near});world.value.setTarget(...current.value.pos);window.addEventListener('keydown',key)})
+onBeforeUnmount(()=>{world.value?.destroy();window.removeEventListener('keydown',key)})
 </script>
-
-<template>
-  <main class="game-shell">
-    <svg class="world" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-label="A painted view of Kanchan Gaon">
-      <defs>
-        <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#071a2c"/><stop offset=".48" stop-color="#3c6475"/><stop offset="1" stop-color="#d89a6a"/></linearGradient>
-        <linearGradient id="snow" x2="0" y2="1"><stop stop-color="#d7e4df"/><stop offset="1" stop-color="#76919a"/></linearGradient>
-        <linearGradient id="ground" x2="0" y2="1"><stop stop-color="#304d49"/><stop offset="1" stop-color="#102a2e"/></linearGradient>
-        <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-      </defs>
-      <rect width="1600" height="900" fill="url(#sky)"/>
-      <circle cx="1260" cy="160" r="105" fill="#ffd9a3" opacity=".3" filter="url(#glow)"/>
-      <path d="M0 390L245 120 405 320 610 70 820 330 1020 90 1230 330 1425 130 1600 350V570H0Z" fill="#213d4d"/>
-      <path d="M130 265l115-145 65 110-42-17-26 33-31-28zM490 205L610 70l85 150-77-59-32 39-31-20zM900 245l120-155 90 158-80-61-33 44-38-22zM1328 235l97-105 88 145-78-48-25 33z" fill="url(#snow)" opacity=".95"/>
-      <path d="M0 450 Q340 350 680 470T1600 420V900H0Z" fill="url(#ground)"/>
-      <path d="M0 620 Q310 515 620 640T1180 565T1600 590" fill="none" stroke="#c6d3c7" stroke-width="23" opacity=".35"/>
-      <path d="M760 900C730 780 810 720 785 625S930 475 1100 430" fill="none" stroke="#c2c0a8" stroke-width="38" opacity=".8"/>
-      <ellipse cx="1120" cy="285" rx="150" ry="48" fill="#4bc0c0" opacity=".75"/><ellipse cx="1120" cy="277" rx="125" ry="29" fill="#8ce3da" opacity=".48"/>
-      <g fill="#162f30" stroke="#183638" stroke-width="5">
-        <path v-for="x in [80,155,250,1280,1370,1460,1510]" :key="x" :d="`M${x} 610l45-125 42 125h-26l33 80h-132l34-80z`"/>
-      </g>
-      <g class="terraces" fill="none" stroke="#708374" stroke-width="9" opacity=".7"><path d="M0 700q180-75 400-25"/><path d="M0 765q230-82 450-26"/><path d="M0 830q260-80 490-22"/></g>
-      <g class="houses">
-        <g v-for="(h,i) in [{x:600,y:610},{x:720,y:670},{x:850,y:600},{x:930,y:690},{x:520,y:720},{x:1040,y:625}]" :key="i" :transform="`translate(${h.x} ${h.y})`">
-          <rect width="115" height="75" rx="3" fill="#8d6649"/><path d="M-14 8L57-38 130 8Z" fill="#342f31"/><rect x="47" y="38" width="24" height="37" fill="#412c25"/><rect x="15" y="25" width="18" height="18" fill="#ffbf67" filter="url(#glow)"/>
-        </g>
-      </g>
-      <g transform="translate(790 590)"><rect x="-9" y="0" width="18" height="135" fill="#513a2c"/><circle cy="-15" r="62" fill="#24453e"/><path d="M-80-25Q0 10 90-38M-68-5Q5 30 78-10" stroke="#e89c4e" stroke-width="4" fill="none" stroke-dasharray="13 10"/></g>
-      <g v-for="n in snow" :key="n.x+n.y" class="flake" :style="{ '--delay': `${n.d}s`, '--speed': `${n.s + 5}s` }"><circle :cx="n.x * 16" :cy="n.y * 9" r="2.3" fill="white" opacity=".8"/></g>
-      <g class="quest-marker" :transform="`translate(${currentMission.target.x*16} ${currentMission.target.y*9})`"><path d="M0-38l8 13-8 13-8-13z" fill="#f5c86b"/><circle r="18" fill="none" stroke="#f5c86b" stroke-width="3"/></g>
-      <g class="player" :transform="`translate(${player.x*16} ${player.y*9})`">
-        <ellipse cy="27" rx="20" ry="8" fill="#07191d" opacity=".45"/><path d="M-13-2L-22 26M13-2L22 26" stroke="#20272d" stroke-width="10" stroke-linecap="round"/><path d="M-22-28Q0-42 22-28L15 8Q0 18-15 8Z" fill="#b34b3c"/><path d="M-8-42a12 12 0 1024 0 12 12 0 10-24 0" fill="#c78d69"/><path d="M-13-48q13-17 30 1" stroke="#18252a" stroke-width="9" stroke-linecap="round"/>
-      </g>
-    </svg>
-
-    <header class="topbar">
-      <div class="brand"><span class="crest">☼</span><div><b>KANCHAN GAON</b><small>HIMALAYAN STORIES</small></div></div>
-      <div class="weather"><span>❄</span><div><b>LIGHT SNOW</b><small>EARLY EVENING · −4°C</small></div></div>
-      <div class="wallet"><small>WALLET</small><b>₹ {{ wallet }}</b></div>
-      <button class="icon-button" @click="journalOpen = !journalOpen">J <span>JOURNAL</span></button>
-      <button class="icon-button" @click="inventoryOpen = !inventoryOpen">TAB <span>SATCHEL</span></button>
-    </header>
-
-    <aside class="quest-card">
-      <div class="eyebrow"><span>MISSION {{ progress }}</span><i></i></div>
-      <h1>{{ currentMission.title }}</h1>
-      <p>{{ currentMission.text }}</p>
-      <div class="objective"><span class="diamond"></span><div><small>CURRENT OBJECTIVE</small><b>{{ currentMission.action }}</b></div></div>
-      <div class="reward" v-if="currentMission.reward"><span>REWARD</span><b>₹{{ currentMission.reward }}</b></div>
-    </aside>
-
-    <div class="compass"><span>W</span><i></i><b>N</b><i class="gold"></i><span>E</span></div>
-    <div v-if="canInteract" class="interact"><kbd>E</kbd><div><small>INTERACT</small><b>{{ currentMission.action }}</b></div></div>
-    <div v-if="toast" class="toast">{{ toast }}</div>
-
-    <div class="controls"><div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>MOVE</span></div><div><kbd>⇧</kbd><span>SPRINT</span></div><div><kbd>E</kbd><span>INTERACT</span></div></div>
-    <div class="stamina" :class="{ active: stamina < 99 }"><span>STAMINA</span><i><b :style="{width: stamina + '%'}"></b></i></div>
-
-    <section v-if="dialogue" class="dialogue-panel">
-      <div class="portrait">{{ dialogue.name.charAt(0) }}</div>
-      <div class="dialogue-copy"><small>{{ dialogue.name }}</small><p>“{{ dialogue.text }}”</p></div>
-      <button @click="dialogue.button === 'BEGIN JOURNEY' ? begin() : continueDialogue()">{{ dialogue.button }} <span>→</span></button>
-    </section>
-
-    <div v-if="inventoryOpen" class="overlay" @click.self="inventoryOpen = false">
-      <section class="modal satchel">
-        <button class="close" @click="inventoryOpen = false">×</button><span class="kicker">YOUR BELONGINGS</span><h2>Satchel & Wallet</h2>
-        <div class="balance"><small>RUPEES SAVED</small><b>₹ {{ wallet }}</b></div>
-        <div v-if="mission === 6" class="shop"><p>Choose one gift for Pema. What you bring will shape the ending.</p><button v-for="item in gifts" :key="item.id" @click="buy(item)" :disabled="!!gift || wallet < item.price"><i>{{ item.icon }}</i><span><small>{{ item.shop }}</small>{{ item.name }}</span><b>{{ item.price ? `₹${item.price}` : 'FREE' }}</b></button></div>
-        <div v-else class="empty"><span>♢</span><p>{{ gift ? gift.name : 'Your satchel is light.' }}</p><small>Complete village missions to earn rupees and collect story items.</small></div>
-      </section>
-    </div>
-
-    <div v-if="journalOpen" class="overlay" @click.self="journalOpen = false"><section class="modal journal"><button class="close" @click="journalOpen = false">×</button><span class="kicker">VILLAGE CHRONICLE</span><h2>My Journey</h2><ol><li v-for="(m,i) in missions" :key="m.title" :class="{done:i < mission, current:i===mission}"><span>{{ i < mission ? '✓' : i+1 }}</span><div><b>{{ m.title }}</b><small>{{ i < mission ? 'COMPLETED' : i === mission ? 'IN PROGRESS' : 'LOCKED' }}</small></div><em v-if="m.reward">₹{{ m.reward }}</em></li></ol></section></div>
-  </main>
-</template>
-
+<template><main class="game"><canvas ref="canvas" class="viewport"></canvas><div class="cinema"></div>
+ <section v-if="!started" class="landing"><div class="sigil">✦</div><p>AN OPEN-WORLD HIMALAYAN ADVENTURE</p><h1>KANCHAN<br><span>GAON</span></h1><div class="rule"><i></i> हिमालय की कहानी <i></i></div><button @click="begin">ENTER THE VALLEY <b>→</b></button><small>Best experienced with headphones · Keyboard & mouse</small></section>
+ <template v-else><header><div class="logo"><b>KG</b><span>KANCHAN GAON<small>THE VALLEY REMEMBERS</small></span></div><div class="day"><i>☼</i><span>DAY 1<small>GOLDEN HOUR · LIGHT SNOW</small></span></div><div class="money"><small>RUPEES</small>₹ {{wallet}}</div><button @click="journal=!journal">J&nbsp;&nbsp; JOURNAL</button><button @click="satchel=!satchel">TAB&nbsp;&nbsp; SATCHEL</button></header>
+ <aside class="quest"><small>STORY QUEST · {{mission+1}} / 7</small><h2>{{current.title}}</h2><p>{{current.objective}}</p><div><i>◆</i><span>{{near?'You have arrived':'Follow the golden marker'}}</span><em v-if="current.reward">₹{{current.reward}}</em></div></aside>
+ <div class="compass">W <i></i> <b>N</b> <i></i> E</div><div v-if="near" class="prompt"><kbd>E</kbd><span>INTERACT<small>{{current.objective}}</small></span></div><div class="tips"><span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> MOVE</span><span><kbd>⇧</kbd> SPRINT</span><span>DRAG MOUSE &nbsp; CAMERA</span></div><div class="stamina" :class="{show:stamina<99}"><small>STAMINA</small><i><b :style="{width:stamina+'%'}"></b></i></div></template>
+ <div v-if="toast" class="toast">{{toast}}</div>
+ <section v-if="dialogue" class="dialogue"><div class="face">{{dialogue.npc[0]}}</div><div><small>{{dialogue.npc}}</small><p>“{{dialogue.text}}”</p></div><button @click="closeDialogue">{{dialogue.end?'BEGIN OUR STORY':'CONTINUE'}} →</button></section>
+ <div v-if="satchel||journal" class="veil" @click.self="satchel=false;journal=false"><section class="panel"><button class="x" @click="satchel=false;journal=false">×</button><small>{{satchel?'INVENTORY':'VILLAGE CHRONICLE'}}</small><h2>{{satchel?'Traveler’s Satchel':'My Journey'}}</h2><div v-if="satchel"><div class="balance">₹ {{wallet}} <small>AVAILABLE</small></div><p class="note">{{mission===6?'Choose one gift for Pema before climbing to Ho Tso.':'Complete village quests to earn rupees and story items.'}}</p><div class="shop" v-if="mission===6"><button v-for="g in gifts" :key="g.id" @click="buy(g)" :disabled="!!gift||wallet<g.price"><i>{{g.icon}}</i><span>{{g.name}}<small>{{g.price?'MARKET STREET':'LAKE TRAIL'}}</small></span><b>{{g.price?'₹'+g.price:'FREE'}}</b></button></div><div v-else class="empty">{{gift?gift.icon:'♢'}}<p>{{gift?gift.name:'Your satchel is light.'}}</p></div></div><ol v-else><li v-for="(m,i) in missions" :class="{done:i<mission,active:i===mission}"><i>{{i<mission?'✓':i+1}}</i><span>{{m.title}}<small>{{i<mission?'COMPLETED':i===mission?'IN PROGRESS':'LOCKED'}}</small></span><b v-if="m.reward">₹{{m.reward}}</b></li></ol></section></div>
+ </main></template>
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap');
-.game-shell{height:100vh;min-height:650px;position:relative;overflow:hidden;background:#102a2e;color:#f5f0e5;font-family:'DM Sans',sans-serif;user-select:none}.world{position:absolute;width:100%;height:100%;inset:0}.game-shell:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(3,13,19,.4),transparent 28%,transparent 60%,rgba(3,13,19,.55)),radial-gradient(circle at center,transparent 40%,rgba(3,13,19,.45));box-shadow:inset 0 0 120px #061419}.topbar{position:absolute;top:0;left:0;right:0;height:84px;z-index:2;display:flex;align-items:center;padding:0 36px;border-bottom:1px solid rgba(255,255,255,.14);background:linear-gradient(#06161ecc,transparent);gap:28px}.brand{display:flex;align-items:center;gap:12px;margin-right:auto}.brand b,.weather b{font-family:Cinzel,serif;font-size:16px;letter-spacing:2px}.brand small,.weather small{display:block;font-size:9px;letter-spacing:2.2px;color:#b3c0bd;margin-top:3px}.crest{font-size:25px;color:#e8b65c;border:1px solid #c79b4e;width:42px;height:42px;display:grid;place-items:center;transform:rotate(45deg)}.crest::first-letter{transform:rotate(-45deg)}.weather{display:flex;align-items:center;gap:10px;padding-right:28px;border-right:1px solid #ffffff2b}.weather>span{font-size:21px;color:#cfe9eb}.weather b{font-family:'DM Sans';font-size:10px}.wallet{min-width:80px}.wallet small{display:block;font-size:9px;letter-spacing:1.8px;color:#a9b8b8}.wallet b{font-family:Cinzel;font-size:19px;color:#f4ca78}.icon-button{background:#ffffff0c;border:1px solid #ffffff27;color:white;height:38px;padding:0 12px;font-size:10px;font-weight:700}.icon-button span{margin-left:7px;color:#b7c1c0;letter-spacing:1px}.quest-card{position:absolute;z-index:2;top:122px;left:36px;width:335px;padding:25px 25px 21px;background:linear-gradient(135deg,rgba(8,27,32,.94),rgba(11,35,38,.78));border:1px solid #ffffff20;border-left:3px solid #d4a650;box-shadow:0 18px 40px #07171980;backdrop-filter:blur(10px)}.eyebrow{display:flex;align-items:center;color:#e2b968;font-size:9px;letter-spacing:2px;font-weight:700}.eyebrow i{height:1px;background:#d4a65065;flex:1;margin-left:12px}.quest-card h1,.modal h2{font:600 27px/1.1 Cinzel,serif;margin:11px 0 9px}.quest-card p{font:13px/1.6 'DM Sans';color:#bfc8c5}.objective{display:flex;align-items:center;gap:13px;margin-top:19px;padding:13px 0;border-top:1px solid #ffffff16}.objective small{font-size:8px;letter-spacing:1.6px;color:#8ea4a1;display:block}.objective b{font-size:11px;letter-spacing:.4px}.diamond{width:9px;height:9px;background:#e9bd67;transform:rotate(45deg);box-shadow:0 0 15px #f5c873}.reward{display:flex;justify-content:space-between;align-items:center;background:#ffffff0b;padding:8px 11px;font-size:9px;letter-spacing:1.2px;color:#9fb0ae}.reward b{font:600 14px Cinzel;color:#f2c66d}.compass{position:absolute;z-index:2;top:103px;left:50%;transform:translateX(-50%);display:flex;gap:14px;align-items:center;color:#a9b5b1;font-size:10px}.compass i{width:45px;height:1px;background:#ffffff3b}.compass .gold{width:4px;height:11px;background:#e9b858}.compass b{color:white;font-family:Cinzel}.player{transition:transform .05s linear}.quest-marker{animation:bob 1.6s ease-in-out infinite}.flake{animation:snowfall var(--speed) linear infinite;animation-delay:calc(var(--delay) * -1)}@keyframes snowfall{to{transform:translateY(100px) translateX(18px)}}@keyframes bob{50%{transform:translateY(-9px)}}.controls{position:absolute;z-index:2;bottom:28px;left:36px;display:flex;gap:23px}.controls div{display:flex;align-items:center;gap:5px}.controls span{font-size:8px;letter-spacing:1.3px;color:#bdc6c3;margin-left:4px}kbd{font-family:'DM Sans';min-width:25px;height:25px;border:1px solid #ffffff47;background:#071b20b8;display:inline-grid;place-items:center;border-radius:2px;color:white;font-size:10px;box-shadow:inset 0 -2px #0005}.stamina{position:absolute;z-index:2;right:36px;bottom:35px;width:180px;opacity:0;transition:.3s}.stamina.active{opacity:1}.stamina span{font-size:8px;letter-spacing:1.5px}.stamina i{display:block;height:5px;background:#061317;margin-top:7px}.stamina b{display:block;height:100%;background:#e8bb65}.interact{position:absolute;z-index:3;left:50%;bottom:128px;transform:translateX(-50%);display:flex;align-items:center;gap:11px;background:#071a20dd;border:1px solid #e4b95c70;padding:10px 16px}.interact small{display:block;font-size:8px;color:#e7b95e;letter-spacing:1.5px}.interact b{font-size:11px}.toast{position:absolute;top:102px;left:50%;z-index:8;transform:translateX(-50%);padding:10px 20px;background:#071a20e8;border:1px solid #d5ae5e66;color:#f0cc82;font-size:10px;letter-spacing:1.5px}.dialogue-panel{position:absolute;z-index:6;bottom:80px;left:50%;transform:translateX(-50%);width:min(850px,calc(100% - 60px));min-height:142px;background:linear-gradient(100deg,#071b20f5,#102d30ed);border:1px solid #ffffff28;border-top:2px solid #c99b50;display:flex;align-items:center;padding:23px 26px;box-shadow:0 25px 70px #000a}.portrait{width:86px;height:86px;flex:none;border:1px solid #d9b56b;background:radial-gradient(circle at 50% 30%,#ad8262 0 20%,#283d3d 21% 45%,#132928 46%);display:grid;place-items:center;font:700 23px Cinzel;color:#fff;text-shadow:0 2px 4px #000}.dialogue-copy{padding:0 25px;flex:1}.dialogue-copy small,.kicker{color:#e2b866;font-size:9px;letter-spacing:2.3px;text-transform:uppercase;font-weight:700}.dialogue-copy p{font:500 19px/1.55 Cinzel,serif;margin-top:7px;color:#f1eadc}.dialogue-panel button{background:#c99b4f;border:0;padding:13px 18px;color:#102427;font-size:9px;font-weight:800;letter-spacing:1.2px;white-space:nowrap}.dialogue-panel button span{font-size:17px;margin-left:9px}.overlay{position:absolute;z-index:20;inset:0;background:#031014c9;backdrop-filter:blur(12px);display:grid;place-items:center}.modal{position:relative;width:min(630px,calc(100% - 40px));max-height:84vh;overflow:auto;background:#0a2226;border:1px solid #ffffff25;border-top:3px solid #d5a754;padding:32px;box-shadow:0 30px 100px #000}.close{position:absolute;right:18px;top:13px;border:0;background:none;color:#cad2cf;font-size:25px}.modal h2{font-size:31px}.balance{position:absolute;right:60px;top:34px;text-align:right}.balance small{display:block;color:#849a96;font-size:8px;letter-spacing:1.5px}.balance b{font:25px Cinzel;color:#efc570}.shop>p{color:#a9b8b5;font-size:12px;border-top:1px solid #ffffff19;padding:17px 0}.shop button{display:flex;width:100%;align-items:center;text-align:left;background:#ffffff08;border:1px solid #ffffff14;color:#eef2ed;padding:12px;margin-top:7px}.shop button:hover:not(:disabled){background:#d0a45618;border-color:#d0a456}.shop button:disabled{opacity:.38}.shop i{font-style:normal;width:38px;font-size:22px;color:#e3b760}.shop span{display:flex;flex-direction:column;flex:1;font-size:12px}.shop small{font-size:7px;letter-spacing:1.5px;color:#88a19c}.shop b{font:15px Cinzel;color:#e8c174}.empty{text-align:center;padding:55px 20px;border-top:1px solid #ffffff18}.empty>span{font-size:50px;color:#d2a95b}.empty p{font:18px Cinzel;margin:10px}.empty small{color:#869b98}.journal ol{list-style:none;margin-top:20px}.journal li{display:flex;align-items:center;gap:15px;padding:13px;border-top:1px solid #ffffff12;opacity:.38}.journal li.done,.journal li.current{opacity:1}.journal li.current{background:#ffffff09}.journal li>span{width:28px;height:28px;border:1px solid #78908c;display:grid;place-items:center;font-size:10px}.journal li.done>span{color:#eac46f;border-color:#eac46f}.journal li div{display:flex;flex-direction:column;flex:1}.journal li b{font:13px Cinzel}.journal li small{font-size:7px;letter-spacing:1.5px;color:#8fa39f}.journal li em{font:normal 12px Cinzel;color:#dbb866}
-@media(max-width:800px){.topbar{height:66px;padding:0 15px}.weather,.icon-button span{display:none}.brand b{font-size:12px}.quest-card{top:82px;left:15px;width:285px;padding:18px}.quest-card h1{font-size:21px}.controls{left:15px;bottom:15px}.controls div:nth-child(n+2){display:none}.dialogue-panel{bottom:55px;min-height:170px;padding:18px}.portrait{display:none}.dialogue-copy{padding:0 12px}.dialogue-copy p{font-size:15px}.dialogue-panel{flex-wrap:wrap}.dialogue-panel button{margin-left:auto}.compass{top:76px}.stamina{display:none}}
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Manrope:wght@400;500;600&display=swap');*{box-sizing:border-box}.game{height:100vh;min-height:650px;background:#335867;color:#f9f6ec;font-family:Manrope,sans-serif;overflow:hidden;position:relative}.viewport{position:absolute;width:100%;height:100%;cursor:grab}.viewport:active{cursor:grabbing}.cinema{position:absolute;inset:0;pointer-events:none;background:linear-gradient(#07161e80,transparent 22%,transparent 65%,#0613186b),radial-gradient(circle,transparent 52%,#06151d80);box-shadow:inset 0 0 90px #071921;z-index:1}.landing{position:absolute;z-index:5;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(circle at 50% 45%,transparent,#071820bf 70%);text-shadow:0 3px 20px #051419}.landing .sigil{font-size:32px;color:#e9c172}.landing>p{font-size:9px;letter-spacing:4px;margin:19px}.landing h1{font:600 clamp(52px,7vw,100px)/.82 Cinzel;letter-spacing:12px;margin:0}.landing h1 span{color:#f2ca7d}.rule{display:flex;align-items:center;gap:15px;color:#d6c49f;font:11px Cinzel;letter-spacing:3px;margin:30px}.rule i{width:65px;height:1px;background:#d6ae62}.landing button{border:1px solid #e8c274;background:#10282fcf;color:#fff;padding:17px 25px;font:600 10px Manrope;letter-spacing:2px}.landing button:hover{background:#e8c274;color:#10282f}.landing button b{margin-left:28px}.landing>small{font-size:8px;letter-spacing:1.5px;color:#b3c1bd;margin-top:18px}header{position:absolute;z-index:3;left:0;right:0;top:0;height:78px;display:flex;align-items:center;padding:0 28px;background:linear-gradient(#071922dc,transparent);border-bottom:1px solid #ffffff20;gap:18px}.logo{display:flex;align-items:center;margin-right:auto}.logo>b{width:42px;height:42px;border:1px solid #d8b05f;display:grid;place-items:center;font:600 14px Cinzel;color:#e6bf6d;transform:rotate(45deg);margin-right:18px}.logo>span,.day>span{font:600 13px Cinzel;letter-spacing:2px}.logo small,.day small{display:block;font:7px Manrope;letter-spacing:2px;color:#a8bab7;margin-top:4px}.day{display:flex;align-items:center;gap:10px;padding-right:22px;border-right:1px solid #ffffff25}.day i{font-style:normal;color:#f4ca70;font-size:20px}.money{font:600 18px Cinzel;color:#f2c56d;min-width:80px}.money small{display:block;font:7px Manrope;letter-spacing:2px;color:#a8b7b3}header button{border:1px solid #ffffff2d;background:#0a2028a8;color:#dbe4df;padding:11px 13px;font-size:8px;letter-spacing:1px}.quest{position:absolute;z-index:3;top:108px;left:28px;width:320px;padding:23px;background:linear-gradient(135deg,#071d24e8,#0a282bbd);border:1px solid #ffffff27;border-left:3px solid #e8bb61;box-shadow:0 20px 55px #07141988}.quest>small,.panel>small{color:#efc269;font-size:8px;letter-spacing:2px}.quest h2,.panel h2{font:600 25px Cinzel;margin:9px 0}.quest p{font-size:12px;color:#bcc9c5;line-height:1.55}.quest>div{display:flex;align-items:center;border-top:1px solid #ffffff1f;margin-top:17px;padding-top:14px}.quest i{color:#efc269;font-style:normal;margin-right:10px}.quest span{font-size:10px}.quest em{font:normal 12px Cinzel;color:#edc16b;margin-left:auto}.compass{position:absolute;z-index:3;top:91px;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:8px;color:#bfd0cc}.compass i{display:inline-block;width:42px;height:1px;background:#ffffff55;vertical-align:middle}.compass b{color:#efc168}.prompt{position:absolute;z-index:4;bottom:115px;left:50%;transform:translateX(-50%);display:flex;align-items:center;padding:10px 15px;background:#081d24e8;border:1px solid #e9bf6c88}.prompt>span{font-size:8px;letter-spacing:1.5px;margin-left:10px}.prompt small{display:block;color:#b7c4bf;letter-spacing:0;margin-top:3px}.tips{position:absolute;z-index:3;left:28px;bottom:28px;display:flex;gap:22px;align-items:center;color:#bdcac6;font-size:7px;letter-spacing:1.2px}.tips span{display:flex;align-items:center;gap:4px}kbd{display:inline-grid;place-items:center;min-width:25px;height:25px;border:1px solid #ffffff51;background:#081b22cf;color:#fff;font:9px Manrope;border-radius:2px}.stamina{position:absolute;z-index:3;right:32px;bottom:32px;width:170px;opacity:0;transition:.2s}.stamina.show{opacity:1}.stamina small{font-size:7px;letter-spacing:2px}.stamina i{height:5px;background:#07161d;display:block;margin-top:6px}.stamina b{display:block;height:100%;background:#efc368}.toast{position:absolute;z-index:12;top:95px;left:50%;transform:translateX(-50%);background:#071c24e8;border:1px solid #e8bd6766;padding:10px 22px;color:#f1c978;font-size:9px;letter-spacing:1.5px}.dialogue{position:absolute;z-index:8;bottom:70px;left:50%;transform:translateX(-50%);width:min(860px,90%);min-height:138px;background:linear-gradient(100deg,#071b23f5,#102d30ed);border:1px solid #ffffff33;border-top:2px solid #d6ad62;display:flex;align-items:center;padding:22px 25px;box-shadow:0 25px 80px #000b}.face{width:86px;height:86px;background:radial-gradient(circle at 50% 35%,#b67b58 0 20%,#202f32 21% 46%,#11262a 47%);border:1px solid #e4be70;display:grid;place-items:center;font:24px Cinzel}.dialogue>div:nth-child(2){padding:0 24px;flex:1}.dialogue small{font-size:8px;letter-spacing:2px;color:#efc16a}.dialogue p{font:18px/1.5 Cinzel;margin:7px 0}.dialogue button{background:#d0a451;border:0;padding:13px 17px;font-size:8px;font-weight:bold;letter-spacing:1px;color:#10252b}.veil{position:absolute;z-index:20;inset:0;background:#031117ca;backdrop-filter:blur(10px);display:grid;place-items:center}.panel{position:relative;width:min(620px,92%);max-height:82vh;overflow:auto;padding:31px;background:#092229;border:1px solid #ffffff29;border-top:3px solid #e0b45e;box-shadow:0 35px 100px #000}.x{position:absolute;right:15px;top:10px;border:0;background:none;color:#d6dedb;font-size:25px}.balance{position:absolute;right:55px;top:34px;font:26px Cinzel;color:#edc36f}.balance small{display:block;font:7px Manrope;letter-spacing:2px;color:#91a7a2}.note{border-top:1px solid #ffffff1b;padding:15px 0;color:#9fb2ad;font-size:11px}.shop button{display:flex;align-items:center;width:100%;background:#ffffff08;border:1px solid #ffffff17;color:white;padding:12px;margin-top:7px;text-align:left}.shop button:hover:not(:disabled){border-color:#ddb462;background:#d5ac5b15}.shop button:disabled{opacity:.35}.shop i{width:42px;font-style:normal;font-size:23px;color:#e7bd69}.shop span{display:flex;flex:1;flex-direction:column;font-size:12px}.shop small{font-size:7px;color:#8da39f;letter-spacing:1.5px}.shop b{font:14px Cinzel;color:#eac06e}.empty{text-align:center;padding:45px;font-size:42px;color:#d8b264}.empty p{font:16px Cinzel;color:#f4f0e6}.panel ol{list-style:none;margin:18px 0 0;padding:0}.panel li{display:flex;align-items:center;gap:14px;border-top:1px solid #ffffff17;padding:12px;opacity:.32}.panel li.done,.panel li.active{opacity:1}.panel li.active{background:#ffffff08}.panel li>i{width:28px;height:28px;display:grid;place-items:center;border:1px solid #8aa09b;font:normal 9px Manrope}.panel li span{display:flex;flex:1;flex-direction:column;font:12px Cinzel}.panel li small{font:7px Manrope;color:#8ca29d;letter-spacing:1px}.panel li b{font:12px Cinzel;color:#e2ba68}@media(max-width:720px){header{padding:0 13px}.day,header button{display:none}.quest{left:14px;top:88px;width:285px}.tips{left:14px}.tips span:nth-child(n+2){display:none}.dialogue .face{display:none}.dialogue p{font-size:14px}.dialogue{bottom:50px;flex-wrap:wrap}.landing h1{letter-spacing:6px}.compass{display:none}}
 </style>
